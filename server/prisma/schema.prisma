@@ -18,10 +18,15 @@ model User {
   email        String    @unique
   password     String
   name         String
+  phone        String?
+  avatar       String?
   role         Role      @default(USER)
-  refreshToken String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+
+  bookings     Booking[]
+  reviews      Review[]
+  wishlists    Wishlist[]
 
   @@map("users")
 }
@@ -29,4 +34,163 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+model Hotel {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  address     String
+  city        String
+  country     String
+  latitude    Float?
+  longitude   Float?
+  starRating  Int      @default(3)
+  checkInTime  String  @default("14:00")
+  checkOutTime String  @default("12:00")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  images      HotelImage[]
+  amenities   HotelAmenity[]
+  rooms       Room[]
+  reviews     Review[]
+  wishlists   Wishlist[]
+
+  @@map("hotels")
+}
+
+model HotelImage {
+  id        String   @id @default(cuid())
+  hotelId   String
+  url       String
+  isPrimary Boolean  @default(false)
+
+  hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@map("hotel_images")
+}
+
+model HotelAmenity {
+  id      String @id @default(cuid())
+  hotelId String
+  name    String 
+
+  hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@map("hotel_amenities")
+}
+
+model Room {
+  id          String   @id @default(cuid())
+  hotelId     String
+  name        String
+  description String?
+  type        RoomType @default(STANDARD)
+  capacity    Int      @default(2)
+  pricePerNight Float
+  totalRooms  Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  hotel       Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  images      RoomImage[]
+  bookings    Booking[]
+
+  @@map("rooms")
+}
+
+enum RoomType {
+  STANDARD
+  DELUXE
+  SUITE
+  VILLA
+}
+
+model RoomImage {
+  id     String @id @default(cuid())
+  roomId String
+  url    String
+
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@map("room_images")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  userId        String
+  roomId        String
+  checkIn       DateTime
+  checkOut      DateTime
+  guests        Int           @default(1)
+  totalPrice    Float
+  status        BookingStatus @default(PENDING)
+  specialRequest String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id])
+  room          Room          @relation(fields: [roomId], references: [id])
+  payment       Payment?
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  bookingId     String        @unique
+  amount        Float
+  currency      String        @default("THB")
+  status        PaymentStatus @default(PENDING)
+  provider      String        @default("omise")
+  providerChargeId String?   // Omise charge ID
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+
+  booking       Booking       @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  hotelId   String
+  rating    Int     
+  comment   String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  hotel     Hotel    @relation(fields: [hotelId], references: [id])
+
+  @@unique([userId, hotelId])
+  @@map("reviews")
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  hotelId   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  hotel     Hotel    @relation(fields: [hotelId], references: [id])
+
+  @@unique([userId, hotelId]) 
+  @@map("wishlists")
 }
