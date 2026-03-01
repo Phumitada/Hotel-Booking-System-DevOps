@@ -9,4 +9,13 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User.ts'
+export type * from './models/Hotel.ts'
+export type * from './models/HotelImage.ts'
+export type * from './models/HotelAmenity.ts'
+export type * from './models/Room.ts'
+export type * from './models/RoomImage.ts'
+export type * from './models/Booking.ts'
+export type * from './models/Payment.ts'
+export type * from './models/Review.ts'
+export type * from './models/Wishlist.ts'
 export type * from './commonInputTypes.ts'

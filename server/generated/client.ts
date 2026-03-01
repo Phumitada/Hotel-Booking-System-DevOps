@@ -44,3 +44,48 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Hotel
+ * 
+ */
+export type Hotel = Prisma.HotelModel
+/**
+ * Model HotelImage
+ * 
+ */
+export type HotelImage = Prisma.HotelImageModel
+/**
+ * Model HotelAmenity
+ * 
+ */
+export type HotelAmenity = Prisma.HotelAmenityModel
+/**
+ * Model Room
+ * 
+ */
+export type Room = Prisma.RoomModel
+/**
+ * Model RoomImage
+ * 
+ */
+export type RoomImage = Prisma.RoomImageModel
+/**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
+/**
+ * Model Wishlist
+ * 
+ */
+export type Wishlist = Prisma.WishlistModel
