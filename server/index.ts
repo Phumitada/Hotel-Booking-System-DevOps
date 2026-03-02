@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import authRoutes from './routes/auth.routes'
 import hotelRoutes from './routes/hotel.routes'
+import roomRoutes from './routes/room.routes'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/hotels', hotelRoutes)
+app.use('/api/hotels', roomRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
