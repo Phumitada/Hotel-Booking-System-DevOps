@@ -25,9 +25,10 @@ export interface UpdateHotelPayload {
   }
   
 export interface QueryHotelPayload {
-    city?: string;
+    city?: string | string[];
     country?: string;
-    starRating?: number;
+    starRating?: number | number[];
+    amenities?: string | string[];
     page?: number;
     limit?: number;
 }

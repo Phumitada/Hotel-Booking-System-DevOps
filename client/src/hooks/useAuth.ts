@@ -12,8 +12,6 @@ export const useAuth = () => {
   const queryClient = useQueryClient()
   const { setAuth, clearAuth, isAuthenticated, user, isLoading } = useAuthStore()
   const { handleError } = useErrorHandler()
-
-  // Don't call getMe if we're on login/register pages
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
   const { isLoading: isFetchingUser } = useQuery({
@@ -26,7 +24,6 @@ export const useAuth = () => {
         }
         return data
       } catch (error: any) {
-        // Silent handling of 401 errors
         if (error?.response?.status === 401) {
           clearAuth()
           return null

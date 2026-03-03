@@ -23,20 +23,55 @@ export const roomService = {
       type,
       capacity,
       minPrice,  
-      maxPrice,  
+      maxPrice,
+      sortBy = 'pricePerNight',
+      sortOrder = 'asc',
       page = 1,
       limit = 10,
     } = query
 
-    const where = {
+    const where: any = {
       hotelId,
-      name: name ? { contains: name, mode: 'insensitive' as const } : undefined,
-      type: type ? type : undefined,
-      capacity: capacity ? Number(capacity) : undefined,
-      pricePerNight: {
-        gte: minPrice ? Number(minPrice) : undefined,
-        lte: maxPrice ? Number(maxPrice) : undefined,
-      },
+    }
+
+    if (name) {
+      where.name = { contains: name, mode: 'insensitive' as const }
+    }
+
+    if (type) {
+      if (Array.isArray(type)) {
+        where.type = { in: type }
+      } else {
+        where.type = { contains: type, mode: 'insensitive' as const }
+      }
+    }
+
+    if (capacity) {
+      if (Array.isArray(capacity)) {
+        where.capacity = { in: capacity.map(Number) }
+      } else {
+        where.capacity = Number(capacity)
+      }
+    }
+
+    if (minPrice || maxPrice) {
+      where.pricePerNight = {}
+      if (minPrice) where.pricePerNight.gte = Number(minPrice)
+      if (maxPrice) where.pricePerNight.lte = Number(maxPrice)
+    }
+
+    // Build orderBy object
+    let orderBy: any = {}
+    if (sortBy === 'pricePerNight') {
+      orderBy.pricePerNight = sortOrder
+    } else if (sortBy === 'name') {
+      orderBy.name = sortOrder
+    } else if (sortBy === 'capacity') {
+      orderBy.capacity = sortOrder
+    } else if (sortBy === 'type') {
+      orderBy.type = sortOrder
+    } else {
+      orderBy.pricePerNight = sortOrder // default
     }
 
     const [rooms, total] = await Promise.all([
@@ -44,7 +79,7 @@ export const roomService = {
         where,
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
-        orderBy: { pricePerNight: 'asc' },
+        orderBy,
         include: {
           images: true,
           _count: {

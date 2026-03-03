@@ -7,8 +7,7 @@ export const bookingController = {
     try {
       const booking = await bookingService.createBooking({
         ...req.body,
-        userId: (req as AuthRequest).user.userId,
-      });
+      }, (req as AuthRequest).user.userId);
       res
         .status(201)
         .json({

@@ -20,11 +20,13 @@ export interface UpdateRoomPayload {
 }
 
 export interface RoomQuery {
-  name?: string
-  type?: RoomType
-  capacity?: number
-  minPrice?: number
-  maxPrice?: number
-  page?: number
-  limit?: number
+  name?: string;
+  type?: RoomType | RoomType[];
+  capacity?: number | number[];
+  minPrice?: number;
+  maxPrice?: number;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }

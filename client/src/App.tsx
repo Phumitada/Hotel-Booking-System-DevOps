@@ -4,14 +4,16 @@ import AuthLayout from '@/layout/AuthLayout'
 import HomePage from '@/pages/home'
 import LoginPage from '@/pages/login'
 import RegisterPage from '@/pages/register'
-import ProtectedPage from '@/pages/protected'
-import ProjectsPage from '@/pages/projects'
+import HotelsPage from '@/pages/hotels'
+import RoomsPage from '@/pages/rooms'
+import BookingPage from '@/pages/booking'
+import BookingsPage from '@/pages/bookings'
+import WishlistPage from '@/pages/wishlist'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Auth Routes - No Navbar */}
         <Route path="/login" element={
           <AuthLayout>
             <LoginPage />
@@ -22,25 +24,41 @@ function App() {
             <RegisterPage />
           </AuthLayout>
         } />
-        
-        {/* Main Routes - With Navbar */}
         <Route path="/" element={
           <MainLayout>
             <HomePage />
           </MainLayout>
         } />
-        <Route path="/projects" element={
+        <Route path="/hotels" element={
           <MainLayout>
-            <ProjectsPage />
+            <HotelsPage />
           </MainLayout>
         } />
-        <Route path="/protected" element={
+        <Route path="/hotels/:hotelId/rooms" element={
           <MainLayout>
-            <ProtectedPage />
+            <RoomsPage />
           </MainLayout>
         } />
-        
-        {/* Fallback */}
+        <Route path="/booking/:hotelId/:roomId" element={
+          <MainLayout>
+            <BookingPage />
+          </MainLayout>
+        } />
+        <Route path="/bookings" element={
+          <MainLayout>
+            <BookingsPage />
+          </MainLayout>
+        } />
+        <Route path="/search" element={
+          <MainLayout>
+            <HotelsPage />
+          </MainLayout>
+        } />
+        <Route path="/wishlist" element={
+          <MainLayout>
+            <WishlistPage />
+          </MainLayout>
+        } />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

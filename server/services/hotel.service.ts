@@ -1,8 +1,11 @@
-import { prisma } from '../db/prisma'
-import type { CreateHotelPayload, UpdateHotelPayload, QueryHotelPayload } from '../types/hotel.type'
+import { prisma } from "../db/prisma";
+import type {
+  CreateHotelPayload,
+  UpdateHotelPayload,
+  QueryHotelPayload,
+} from "../types/hotel.type";
 
 export const hotelService = {
-
   createHotel: async (payload: CreateHotelPayload) => {
     const hotel = await prisma.hotel.create({
       data: {
@@ -17,49 +20,74 @@ export const hotelService = {
         latitude: payload.latitude,
         longitude: payload.longitude,
       },
-    })
-    return hotel
+    });
+    return hotel;
   },
 
   getHotels: async (query: QueryHotelPayload) => {
-    const { city, country, starRating, page = 1, limit = 10 } = query
+    const { city, country, starRating, amenities, page = 1, limit = 10 } = query;
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+    
+    const whereClause: any = {};
+    
+    if (city) {
+      if (Array.isArray(city)) {
+        whereClause.city = { in: city };
+      } else {
+        whereClause.city = { contains: city, mode: "insensitive" };
+      }
+    }
+    
+    if (country) {
+      whereClause.country = { contains: country, mode: "insensitive" };
+    }
+    
+    if (starRating) {
+      if (Array.isArray(starRating)) {
+        whereClause.starRating = { in: starRating.map(r => Number(r)) };
+      } else {
+        whereClause.starRating = Number(starRating);
+      }
+    }
 
+    if (amenities) {
+      const amenityNames = Array.isArray(amenities) ? amenities : [amenities];
+      whereClause.amenities = {
+        some: {
+          name: { in: amenityNames }
+        }
+      };
+    }
+    
     const hotels = await prisma.hotel.findMany({
-      where: {
-        city: city ? { contains: city, mode: 'insensitive' } : undefined,
-        country: country ? { contains: country, mode: 'insensitive' } : undefined,
-        starRating: starRating ? Number(starRating) : undefined,
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { name: 'asc' },
+      where: whereClause,
+      skip: (pageNum - 1) * limitNum,
+      take: limitNum,
+      orderBy: { name: "asc" },
       include: {
         images: {
-          where: { isPrimary: true }, 
+          where: { isPrimary: true },
           take: 1,
         },
         amenities: true,
         _count: {
-          select: { reviews: true }, 
+          select: { reviews: true },
         },
       },
-    })
+    });
 
     const total = await prisma.hotel.count({
-      where: {
-        city: city ? { contains: city, mode: 'insensitive' } : undefined,
-        country: country ? { contains: country, mode: 'insensitive' } : undefined,
-        starRating: starRating ? Number(starRating) : undefined,
-      },
-    })
+      where: whereClause,
+    });
 
     return {
       data: hotels,
       total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    }
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(total / limitNum),
+    };
   },
 
   getHotelById: async (id: string) => {
@@ -85,24 +113,36 @@ export const hotelService = {
           },
         },
       },
-    })
+    });
 
-    if (!hotel) throw new Error('Hotel not found')
+    if (!hotel) throw new Error("Hotel not found");
 
-    return hotel
+    return hotel;
   },
 
   updateHotel: async (id: string, payload: UpdateHotelPayload) => {
     const hotel = await prisma.hotel.update({
       where: { id },
       data: payload,
-    })
-    return hotel
+    });
+    return hotel;
   },
 
   deleteHotel: async (id: string) => {
-    await prisma.hotel.delete({
-      where: { id },
-    })
+    const activeBookings = await prisma.booking.count({
+      where: {
+        room: { hotelId: id },
+        status: { in: ["PENDING", "CONFIRMED"] },
+      },
+    });
+
+    if (activeBookings > 0) {
+      throw new Error("Cannot delete hotel with active bookings");
+    }
+    await prisma.booking.deleteMany({
+      where: { room: { hotelId: id } },
+    });
+
+    await prisma.hotel.delete({ where: { id } });
   },
-}
+};

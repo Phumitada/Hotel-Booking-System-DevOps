@@ -2,7 +2,7 @@ import { prisma } from "../db/prisma";
 import type { BookingQuery, CreateBookingPayload } from "../types/booking.type";
 
 export const bookingService = {
-  createBooking: async (payload:CreateBookingPayload) => {
+  createBooking: async (payload: CreateBookingPayload, userId: string) => {
     return await prisma.$transaction(async (tx) => {
       const room = await tx.room.findUnique({
         where: { id: payload.roomId },
@@ -40,7 +40,7 @@ export const bookingService = {
         );
       const booking = await tx.booking.create({
         data: {
-          userId: payload.userId,
+          userId: userId,
           roomId: payload.roomId,
           checkIn: checkInTime,
           checkOut: checkOutTime,
@@ -91,42 +91,42 @@ export const bookingService = {
       totalPages: Math.ceil(total / Number(limit)),
     };
   },
-  getBookingById: async (id:string) => {
+  getBookingById: async (id: string) => {
     const booking = await prisma.booking.findUnique({
-        where: { id },
-        include: {
-            room: {
-            include: {
-                hotel: {
-                include: {
-                    images: {
-                    where: { isPrimary: true },
-                    take: 1,
-                    },
-                },
-                },
+      where: { id },
+      include: {
+        room: {
+          include: {
+            hotel: {
+              include: {
                 images: {
-                take: 1,
+                  where: { isPrimary: true },
+                  take: 1,
                 },
+              },
             },
+            images: {
+              take: 1,
             },
+          },
         },
-    })
-    if (!booking) throw new Error("Booking not found")
-    return booking
+      },
+    });
+    if (!booking) throw new Error("Booking not found");
+    return booking;
   },
-  cancelBooking: async (id:string, userId:string) => {
-    const booking = await prisma.booking.findUnique({ where: { id } })
-    if (!booking) throw new Error("Booking not found")
-    if (booking.userId !== userId) throw new Error('Unauthorized')
+  cancelBooking: async (id: string, userId: string) => {
+    const booking = await prisma.booking.findUnique({ where: { id } });
+    if (!booking) throw new Error("Booking not found");
+    if (booking.userId !== userId) throw new Error("Unauthorized");
     if (booking.status === "CANCELLED")
-      throw new Error("Booking is already cancelled")
+      throw new Error("Booking is already cancelled");
     if (booking.status === "COMPLETED")
-        throw new Error("Completed bookings cannot be cancelled")
+      throw new Error("Completed bookings cannot be cancelled");
     const updatedBooking = await prisma.booking.update({
       where: { id },
       data: { status: "CANCELLED" },
-    })
-    return updatedBooking
-  }
+    });
+    return updatedBooking;
+  },
 };
