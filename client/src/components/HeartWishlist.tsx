@@ -17,7 +17,7 @@ export default function HeartWishlist({ hotelId, className = '' }: HeartWishlist
   // Check if hotel is in wishlist
   useEffect(() => {
     if (wishlistItems) {
-      const hotelInWishlist = wishlistItems.some((item: any) => item.hotelId === hotelId)
+      const hotelInWishlist = wishlistItems.data?.some((item: any) => item.hotelId === hotelId)
       setIsWishlisted(hotelInWishlist)
     }
   }, [wishlistItems, hotelId])

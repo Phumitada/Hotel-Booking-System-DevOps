@@ -6,7 +6,7 @@ import LoginPage from '@/pages/login'
 import RegisterPage from '@/pages/register'
 import HotelsPage from '@/pages/hotels'
 import RoomsPage from '@/pages/rooms'
-import BookingPage from '@/pages/booking'
+import BookingPage from '@/pages/Booking'
 import BookingsPage from '@/pages/bookings'
 import WishlistPage from '@/pages/wishlist'
 

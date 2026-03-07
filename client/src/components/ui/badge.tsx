@@ -17,7 +17,7 @@ const badgeVariants = cva(
         secondary:
           "bg-gray-100 text-gray-900 hover:bg-gray-200",
         ghost: "hover:bg-gray-100 hover:text-gray-900",
-        link: "text-primary underline-offset-4 hover:underline-primary",
+        link: "text-primary underline-offset-4 hover:underline-primary/80",
       },
     },
     defaultVariants: {

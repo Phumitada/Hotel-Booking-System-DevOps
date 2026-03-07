@@ -1,127 +1,160 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
-import { useHotels } from '@/hooks/useHotel'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import FilterDropdown from '@/components/FilterDropdown'
-import Pagination from '@/components/ui/pagination'
-import HeartWishlist from '@/components/HeartWishlist'
-import { Search, MapPin, Star, Wifi, Car, Coffee, Dumbbell, Heart, ArrowRight, Loader2, GlassWater, Waves, Droplets, Utensils, Baby, Users, Music, Bike, Briefcase, Compass } from 'lucide-react'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useHotels } from "@/hooks/useHotel";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
+import FilterDropdown from "@/components/FilterDropdown";
+import Pagination from "@/components/ui/pagination";
+import HeartWishlist from "@/components/HeartWishlist";
+import { getMinPrice } from "@/utils/hotel.utils";
+import {
+  Search,
+  MapPin,
+  Star,
+  Wifi,
+  Car,
+  Coffee,
+  Dumbbell,
+  Heart,
+  ArrowRight,
+  Loader2,
+  GlassWater,
+  Waves,
+  Droplets,
+  Utensils,
+  Baby,
+  Users,
+  Music,
+  Bike,
+  Briefcase,
+  Compass,
+} from "lucide-react";
 
 const amenityIcons: { [key: string]: any } = {
-  'wifi': Wifi,
-  'parking': Car,
-  'valet parking': Car,
-  'gym': Dumbbell,
-  'restaurant': Coffee,
-  'bar': GlassWater,
-  'beach access': MapPin,
-  'private beach': MapPin,
-  'pool': Waves,
-  'infinity pool': Waves,
-  'spa': Heart,
-  'concierge': Users,
-  'kids club': Baby,
-  'business center': Briefcase,
-  'laundry': Droplets,
-  'water sports': Waves,
-  'yoga': Heart,
-  'cooking class': Utensils,
-  'bicycle rental': Bike,
-  'cycling': Bike,
-  'trekking': Compass,
-  'beach club': Users,
-  'live music': Music,
-  'kayaking': Waves,
-  'snorkeling': Waves,
-  'snorkeling tours': Waves,
-  'tennis': Dumbbell,
-}
+  wifi: Wifi,
+  parking: Car,
+  "valet parking": Car,
+  gym: Dumbbell,
+  restaurant: Coffee,
+  bar: GlassWater,
+  "beach access": MapPin,
+  "private beach": MapPin,
+  pool: Waves,
+  "infinity pool": Waves,
+  spa: Heart,
+  concierge: Users,
+  "kids club": Baby,
+  "business center": Briefcase,
+  laundry: Droplets,
+  "water sports": Waves,
+  yoga: Heart,
+  "cooking class": Utensils,
+  "bicycle rental": Bike,
+  cycling: Bike,
+  trekking: Compass,
+  "beach club": Users,
+  "live music": Music,
+  kayaking: Waves,
+  snorkeling: Waves,
+  "snorkeling tours": Waves,
+  tennis: Dumbbell,
+};
 
 export default function HotelsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCities, setSelectedCities] = useState<string[]>([])
-  const [selectedRatings, setSelectedRatings] = useState<string[]>([])
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const { isAuthenticated } = useAuth()
-  const navigate = useNavigate()
-  
-  const { data: hotelsData, isLoading, error } = useHotels({ 
-    page: currentPage, 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCities, setSelectedCities] = useState<string[]>([]);
+  const [selectedRatings, setSelectedRatings] = useState<string[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
+
+  const {
+    data: hotelsData,
+    isLoading,
+    error,
+  } = useHotels({
+    page: currentPage,
     limit: 9,
     city: selectedCities.length > 0 ? selectedCities : undefined,
-    starRating: selectedRatings.length > 0 ? selectedRatings.map(r => parseInt(r)) : undefined,
-    amenities: selectedAmenities.length > 0 ? selectedAmenities : undefined
-  })
+    starRating:
+      selectedRatings.length > 0
+        ? selectedRatings.map((r) => parseInt(r))
+        : undefined,
+    amenities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
+  });
 
   // Get all hotels for filter counts (without pagination)
-  const { data: allHotelsData } = useHotels({ 
-    page: 1, 
-    limit: 1000 // Get all hotels for accurate counts
-  })
+  const { data: allHotelsData } = useHotels({
+    page: 1,
+    limit: 1000, // Get all hotels for accurate counts
+  });
 
-  const hotels = hotelsData?.data || []
-  const totalPages = hotelsData?.totalPages || 1
+  const hotels = hotelsData?.data || [];
+  const totalPages = hotelsData?.totalPages || 1;
 
   // Get unique cities, ratings, and amenities for filters from all hotels
-  const allHotels = allHotelsData?.data || []
-  const cities = Array.from(new Set(allHotels.map((h: any) => h.city).filter(Boolean)))
-    .map(city => ({ id: city, label: city, count: allHotels.filter((h: any) => h.city === city).length }))
+  const allHotels = allHotelsData?.data || [];
+  const cities = Array.from(
+    new Set(allHotels.map((h: any) => h.city).filter(Boolean)),
+  ).map((city) => ({
+    id: city,
+    label: city,
+    count: allHotels.filter((h: any) => h.city === city).length,
+  }));
 
-  const ratings = [5, 4, 3, 2, 1].map(rating => ({
+  const ratings = [5, 4, 3, 2, 1].map((rating) => ({
     id: rating.toString(),
     label: `${rating} Stars`,
-    count: allHotels.filter((h: any) => h.starRating === rating).length
-  }))
+    count: allHotels.filter((h: any) => h.starRating === rating).length,
+  }));
 
-  const allAmenities = Array.from(new Set(allHotels.flatMap((h: any) => h.amenities?.map((a: any) => a.name) || [])))
-    .map(amenity => ({ id: amenity, label: amenity, count: allHotels.filter((h: any) => h.amenities?.some((a: any) => a.name === amenity)).length }))
-
-  // Get minimum price from rooms
-  const getMinPrice = (hotel: any) => {
-    if (!hotel.rooms || hotel.rooms.length === 0) return null
-    return Math.min(...hotel.rooms.map((r: any) => r.pricePerNight))
-  }
+  const allAmenities = Array.from(
+    new Set(
+      allHotels.flatMap((h: any) => h.amenities?.map((a: any) => a.name) || []),
+    ),
+  ).map((amenity) => ({
+    id: amenity,
+    label: amenity,
+    count: allHotels.filter((h: any) =>
+      h.amenities?.some((a: any) => a.name === amenity),
+    ).length,
+  }));
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value)
-    setCurrentPage(1) // Reset page when search changes
-  }
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset page when search changes
+  };
 
   const handleCityChange = (cities: string[]) => {
-    setSelectedCities(cities) // Allow multiple cities
-    setCurrentPage(1) // Reset page when city filter changes
-  }
+    setSelectedCities(cities); // Allow multiple cities
+    setCurrentPage(1); // Reset page when city filter changes
+  };
 
   const handleRatingChange = (ratings: string[]) => {
-    setSelectedRatings(ratings) // Allow multiple ratings
-    setCurrentPage(1) // Reset page when rating filter changes
-  }
+    setSelectedRatings(ratings); // Allow multiple ratings
+    setCurrentPage(1); // Reset page when rating filter changes
+  };
 
   const handleAmenityChange = (amenities: string[]) => {
-    setSelectedAmenities(amenities)
-    setCurrentPage(1) // Reset page when amenity filter changes
-  }
+    setSelectedAmenities(amenities);
+    setCurrentPage(1); // Reset page when amenity filter changes
+  };
 
   const handleDropdownToggle = (dropdownId: string) => {
-    setOpenDropdown(openDropdown === dropdownId ? null : dropdownId)
-  }
-
-  const handleBookHotel = (hotelId: string) => {
-    if (!isAuthenticated) {
-      navigate('/login')
-      return
-    }
-    navigate(`/hotels/${hotelId}/rooms`)
-  }
+    setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
+  };
 
   if (isLoading) {
     return (
@@ -131,7 +164,7 @@ export default function HotelsPage() {
           <p className="text-gray-600">Loading hotels...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -142,7 +175,7 @@ export default function HotelsPage() {
           <Button onClick={() => window.location.reload()}>Try Again</Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -152,8 +185,12 @@ export default function HotelsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Find Your Perfect Stay</h1>
-              <p className="text-gray-600 mt-1">Discover amazing hotels at unbeatable prices</p>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Find Your Perfect Stay
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Discover amazing hotels at unbeatable prices
+              </p>
             </div>
             <div className="text-sm text-gray-500">
               {hotelsData?.total || 0} hotels available
@@ -181,24 +218,24 @@ export default function HotelsPage() {
               options={cities}
               selectedValues={selectedCities}
               onSelectionChange={handleCityChange}
-              isOpen={openDropdown === 'city'}
-              onToggle={() => handleDropdownToggle('city')}
+              isOpen={openDropdown === "city"}
+              onToggle={() => handleDropdownToggle("city")}
             />
             <FilterDropdown
               title="Rating"
               options={ratings}
               selectedValues={selectedRatings}
               onSelectionChange={handleRatingChange}
-              isOpen={openDropdown === 'rating'}
-              onToggle={() => handleDropdownToggle('rating')}
+              isOpen={openDropdown === "rating"}
+              onToggle={() => handleDropdownToggle("rating")}
             />
             <FilterDropdown
               title="Amenities"
               options={allAmenities}
               selectedValues={selectedAmenities}
               onSelectionChange={handleAmenityChange}
-              isOpen={openDropdown === 'amenities'}
-              onToggle={() => handleDropdownToggle('amenities')}
+              isOpen={openDropdown === "amenities"}
+              onToggle={() => handleDropdownToggle("amenities")}
             />
           </div>
         </div>
@@ -206,12 +243,21 @@ export default function HotelsPage() {
         {/* Hotels Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-stretch">
           {hotels.map((hotel: any) => (
-            <Card key={hotel.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col">
-              <div onClick={() => navigate(`/hotels/${hotel.id}/rooms`)} className="flex-shrink-0">
+            <Card
+              key={hotel.id}
+              className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col"
+            >
+              <div
+                onClick={() => navigate(`/hotels/${hotel.id}/rooms`)}
+                className="flex-shrink-0"
+              >
                 <div className="relative">
                   {hotel.images && hotel.images.length > 0 ? (
-                    <img 
-                      src={hotel.images.find((img: any) => img.isPrimary)?.url || hotel.images[0].url} 
+                    <img
+                      src={
+                        hotel.images.find((img: any) => img.isPrimary)?.url ||
+                        hotel.images[0].url
+                      }
                       alt={hotel.name}
                       className="w-full h-48 object-cover"
                     />
@@ -224,52 +270,67 @@ export default function HotelsPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Heart Wishlist Button - Top Right */}
-                  <div className="absolute top-2 right-2" onClick={(e) => e.stopPropagation()}>
+                  <div
+                    className="absolute top-2 right-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <HeartWishlist hotelId={hotel.id} />
                   </div>
                 </div>
               </div>
-              
+
               <CardContent className="flex-1 p-4">
                 <div className="min-w-0">
-                  <CardTitle className="text-lg mb-2 truncate">{hotel.name}</CardTitle>
+                  <CardTitle className="text-lg mb-2 truncate">
+                    {hotel.name}
+                  </CardTitle>
                   <CardDescription className="flex items-center text-sm text-muted-foreground mb-3">
                     <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-                    <span className="truncate">{hotel.city}, {hotel.country}</span>
+                    <span className="truncate">
+                      {hotel.city}, {hotel.country}
+                    </span>
                   </CardDescription>
-                  
+
                   <div className="flex items-center mb-3">
                     <Star className="w-4 h-4 text-yellow-400 mr-1" />
-                    <span className="text-sm font-medium mr-2">{hotel.starRating}</span>
+                    <span className="text-sm font-medium mr-2">
+                      {hotel.starRating}
+                    </span>
                     <span className="text-xs text-muted-foreground">
                       ({hotel._count?.reviews || 0} reviews)
                     </span>
                   </div>
-                  
+
                   {hotel.amenities && hotel.amenities.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-3">
                       {hotel.amenities.slice(0, 3).map((amenity: any) => {
-                        const Icon = amenityIcons[amenity.name] || amenityIcons[amenity.name?.toLowerCase()]
+                        const Icon =
+                          amenityIcons[amenity.name] ||
+                          amenityIcons[amenity.name?.toLowerCase()];
                         return (
-                          <div key={amenity.id} className="flex items-center space-x-1 text-xs text-muted-foreground">
+                          <div
+                            key={amenity.id}
+                            className="flex items-center space-x-1 text-xs text-muted-foreground"
+                          >
                             {Icon && <Icon className="w-3 h-3" />}
                             <span>{amenity.name}</span>
                           </div>
-                        )
+                        );
                       })}
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex items-center justify-between mt-auto">
                   <div>
                     <div className="flex items-center space-x-2">
-                      {getMinPrice(hotel) && (
+                      {getMinPrice(hotel.rooms) && (
                         <>
-                          <span className="text-2xl font-bold text-card-foreground">
-                            ฿{getMinPrice(hotel)}
+                          <div className="text-xs text-muted-foreground mb-1">from</div>
+                          <span className="text-lg font-bold text-card-foreground">
+                            ฿{(getMinPrice(hotel.rooms)??0).toLocaleString()}
                           </span>
                           <span className="text-sm text-muted-foreground">per night</span>
                         </>
@@ -278,13 +339,13 @@ export default function HotelsPage() {
                   </div>
                 </div>
               </CardContent>
-              
+
               <CardFooter className="pt-3 flex-shrink-0">
-                <Button 
-                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground" 
-                  onClick={() => handleBookHotel(hotel.id)}
+                <Button
+                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground"
+                  onClick={() => navigate(`/hotels/${hotel.id}/rooms`)}
                 >
-                  {isAuthenticated ? 'View Rooms' : 'Sign in to Book'}
+                  View Rooms
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </CardFooter>
@@ -308,11 +369,15 @@ export default function HotelsPage() {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No hotels found</h3>
-            <p className="text-gray-600">Try adjusting your search or filters</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No hotels found
+            </h3>
+            <p className="text-gray-600">
+              Try adjusting your search or filters
+            </p>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

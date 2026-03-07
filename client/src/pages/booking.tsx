@@ -1,41 +1,64 @@
-import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
-import { useHotelDetail } from '@/hooks/useHotel'
-import { useRoomDetail } from '@/hooks/useRoom'
-import { useCreateBooking } from '@/hooks/useBooking'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ArrowLeft, Users, Wifi, Car, Coffee, Dumbbell, MapPin, Star, Loader2 } from 'lucide-react'
-import { format } from 'date-fns'
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useHotelDetail } from "@/hooks/useHotel";
+import { useRoomDetail } from "@/hooks/useRoom";
+import { useCreateBooking } from "@/hooks/useBooking";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  ArrowLeft,
+  Users,
+  Wifi,
+  Car,
+  Coffee,
+  Dumbbell,
+  MapPin,
+  Star,
+  Loader2,
+} from "lucide-react";
+import { format } from "date-fns";
 
 const amenityIcons = {
-  'WiFi': Wifi,
-  'Parking': Car,
-  'Gym': Dumbbell,
-  'Restaurant': Coffee,
-  'Beach Access': MapPin,
-  'Pool': Users,
-}
+  WiFi: Wifi,
+  Parking: Car,
+  Gym: Dumbbell,
+  Restaurant: Coffee,
+  "Beach Access": MapPin,
+  Pool: Users,
+};
 
 export default function BookingPage() {
-  const { hotelId, roomId } = useParams<{ hotelId: string; roomId: string }>()
-  const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
-  
-  const [checkIn, setCheckIn] = useState('')
-  const [checkOut, setCheckOut] = useState('')
-  const [guests, setGuests] = useState(1)
+  const { hotelId, roomId } = useParams<{ hotelId: string; roomId: string }>();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
 
-  const { data: hotel, isLoading: hotelLoading } = useHotelDetail(hotelId!)
-  const { data: room, isLoading: roomLoading } = useRoomDetail(hotelId!, roomId!)
-  const createBookingMutation = useCreateBooking()
+  const [checkIn, setCheckIn] = useState(format(today, "yyyy-MM-dd"));
+  const [checkOut, setCheckOut] = useState(format(tomorrow, "yyyy-MM-dd"));
+
+  const [guests, setGuests] = useState(1);
+
+  const { data: hotel, isLoading: hotelLoading } = useHotelDetail(hotelId!);
+  const { data: room, isLoading: roomLoading } = useRoomDetail(
+    hotelId!,
+    roomId!
+  );
+  const createBookingMutation = useCreateBooking();
 
   if (!isAuthenticated) {
-    navigate('/login')
-    return null
+    navigate("/login");
+    return null;
   }
 
   if (hotelLoading || roomLoading) {
@@ -43,7 +66,7 @@ export default function BookingPage() {
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    )
+    );
   }
 
   if (!hotel || !room) {
@@ -52,40 +75,44 @@ export default function BookingPage() {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Not Found</h2>
           <p className="text-gray-600 mb-4">Hotel or room not found</p>
-          <Button onClick={() => navigate('/hotels')}>
-            Back to Hotels
-          </Button>
+          <Button onClick={() => navigate("/hotels")}>Back to Hotels</Button>
         </div>
       </div>
-    )
+    );
   }
 
   const handleBooking = () => {
     if (!checkIn || !checkOut) {
-      alert('Please select check-in and check-out dates')
-      return
+      alert("Please select check-in and check-out dates");
+      return;
     }
 
-    createBookingMutation.mutate({
-      roomId: room.id,
-      checkIn,
-      checkOut,
-      guests,
-    }, {
-      onSuccess: () => {
-        navigate('/bookings')
+    createBookingMutation.mutate(
+      {
+        roomId: room.id,
+        checkIn,
+        checkOut,
+        guests,
       },
-      onError: (error: any) => {
-        alert(error.message || 'Failed to create booking')
+      {
+        onSuccess: () => {
+          navigate("/bookings");
+        },
+        onError: (error: any) => {
+          alert(error.message || "Failed to create booking");
+        },
       }
-    })
-  }
+    );
+  };
 
   const calculateTotal = () => {
-    if (!checkIn || !checkOut) return 0
-    const nights = Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))
-    return nights * room.pricePerNight
-  }
+    if (!checkIn || !checkOut) return 0;
+    const nights = Math.ceil(
+      (new Date(checkOut).getTime() - new Date(checkIn).getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+    return nights * room.pricePerNight;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -117,7 +144,7 @@ export default function BookingPage() {
                       type="date"
                       value={checkIn}
                       onChange={(e) => setCheckIn(e.target.value)}
-                      min={format(new Date(), 'yyyy-MM-dd')}
+                      min={format(new Date(), "yyyy-MM-dd")}
                     />
                   </div>
                   <div>
@@ -127,7 +154,7 @@ export default function BookingPage() {
                       type="date"
                       value={checkOut}
                       onChange={(e) => setCheckOut(e.target.value)}
-                      min={checkIn || format(new Date(), 'yyyy-MM-dd')}
+                      min={checkIn || format(new Date(), "yyyy-MM-dd")}
                     />
                   </div>
                 </div>
@@ -145,7 +172,9 @@ export default function BookingPage() {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Hotel Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Hotel Information
+                  </h3>
                   <div className="space-y-4">
                     <div>
                       <h4 className="font-medium">{hotel.name}</h4>
@@ -155,7 +184,9 @@ export default function BookingPage() {
                       </p>
                       <div className="flex items-center mt-2">
                         <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                        <span className="text-sm">{hotel.starRating} Stars</span>
+                        <span className="text-sm">
+                          {hotel.starRating} Stars
+                        </span>
                       </div>
                     </div>
 
@@ -164,7 +195,10 @@ export default function BookingPage() {
                         <h5 className="font-medium mb-2">Hotel Amenities</h5>
                         <div className="flex flex-wrap gap-2">
                           {hotel.amenities.map((amenity: any) => {
-                            const Icon = amenityIcons[amenity.name as keyof typeof amenityIcons]
+                            const Icon =
+                              amenityIcons[
+                                amenity.name as keyof typeof amenityIcons
+                              ];
                             return (
                               <div
                                 key={amenity.id}
@@ -173,7 +207,7 @@ export default function BookingPage() {
                                 {Icon && <Icon className="h-4 w-4 mr-1" />}
                                 {amenity.name}
                               </div>
-                            )
+                            );
                           })}
                         </div>
                       </div>
@@ -182,7 +216,9 @@ export default function BookingPage() {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Room Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Room Information
+                  </h3>
                   <div className="space-y-2">
                     <h4 className="font-medium">{room.type}</h4>
                     <p className="text-sm text-gray-600">{room.description}</p>
@@ -204,23 +240,27 @@ export default function BookingPage() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Room Rate</span>
-                  <span>${room.pricePerNight}/night</span>
+                  <span>฿{room.pricePerNight.toLocaleString()}/night</span>
                 </div>
 
                 {checkIn && checkOut && (
                   <>
                     <div className="flex justify-between">
                       <span>Check-in</span>
-                      <span>{format(new Date(checkIn), 'MMM dd, yyyy')}</span>
+                      <span>{format(new Date(checkIn), "MMM dd, yyyy")}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Check-out</span>
-                      <span>{format(new Date(checkOut), 'MMM dd, yyyy')}</span>
+                      <span>{format(new Date(checkOut), "MMM dd, yyyy")}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Nights</span>
                       <span>
-                        {Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))}
+                        {Math.ceil(
+                          (new Date(checkOut).getTime() -
+                            new Date(checkIn).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        )}
                       </span>
                     </div>
                   </>
@@ -229,13 +269,15 @@ export default function BookingPage() {
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>${calculateTotal()}</span>
+                    <span>฿{calculateTotal().toLocaleString()}</span>
                   </div>
                 </div>
 
                 <Button
                   onClick={handleBooking}
-                  disabled={createBookingMutation.isPending || !checkIn || !checkOut}
+                  disabled={
+                    createBookingMutation.isPending || !checkIn || !checkOut
+                  }
                   className="w-full"
                 >
                   {createBookingMutation.isPending ? (
@@ -244,12 +286,13 @@ export default function BookingPage() {
                       Processing...
                     </>
                   ) : (
-                    'Confirm Booking'
+                    "Confirm Booking"
                   )}
                 </Button>
 
                 <p className="text-xs text-gray-500 text-center">
-                  By confirming this booking, you agree to our terms and conditions
+                  By confirming this booking, you agree to our terms and
+                  conditions
                 </p>
               </CardContent>
             </Card>
@@ -257,5 +300,5 @@ export default function BookingPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

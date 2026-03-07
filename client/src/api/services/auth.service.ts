@@ -1,4 +1,5 @@
 import { api, axiosPublic } from "@/api/client";
+import { useAuthStore } from "@/stores/auth.store";
 
 interface LoginPayload {
   email: string;
@@ -27,6 +28,8 @@ export const authService = {
   },
 
   getMe: async () => {
+    const token = useAuthStore.getState().accessToken;
+    if(!token) return null;
     try {
       const response = await axiosPublic.get("/auth/me");
       return response.data.data;

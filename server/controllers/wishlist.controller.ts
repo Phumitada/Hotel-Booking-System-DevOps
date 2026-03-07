@@ -13,7 +13,7 @@ export const wishlistController = {
     },
     getWishlist: async (req:Request,res:Response) => {
         try {
-            const wishlist = await wishlistService.getWishlistByUserId((req as AuthRequest).user.userId)
+            const wishlist = await wishlistService.getWishlistByUserId((req as AuthRequest).user.userId,req.query)
             res.status(200).json({ success: true, data: wishlist ,message:"Wishlist retrieved successfully" })
         } catch (error) {
             res.status(400).json({ success: false, message: (error as Error).message })

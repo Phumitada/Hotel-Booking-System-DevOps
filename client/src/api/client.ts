@@ -45,6 +45,11 @@ api.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
+    const authStore = useAuthStore.getState();
+
+    if (error.response?.status === 401 && !authStore.accessToken) {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -70,15 +75,16 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         useAuthStore.getState().clearAuth();
         window.location.href = "/login";
-        return Promise.reject(new Error("Session expired"));
+        return Promise.reject(error)
       } finally {
         isRefreshing = false;
       }
     }
-    if (error.response?.status !== 401) {
-      console.error("API Error:", error);
-      return Promise.reject(error);
-    }
-    return Promise.reject(new Error("Session expired"));
+    // if (error.response?.status !== 401) {
+    //   if (import.meta.env.DEV) {
+    //     console.error("API Error:", error)
+    //   }
+    // }
+    return Promise.reject(error)
   }
 );

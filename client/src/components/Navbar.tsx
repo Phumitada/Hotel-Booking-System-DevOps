@@ -34,7 +34,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors"
+            className="flex items-center space-x-2 text-primary hover:text-primary-hover/80 transition-colors"
           >
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Hotel className="w-5 h-5 text-white" />

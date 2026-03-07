@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input'
 import FilterDropdown from '@/components/FilterDropdown'
 import PriceRangeSlider from '@/components/PriceRangeSlider'
 import Pagination from '@/components/ui/pagination'
+import Reviews from '@/components/Reviews'
+import CreateReview from '@/components/CreateReview'
 import { ArrowLeft, Users, Wifi, Car, Coffee, Dumbbell, Heart, Calendar, Loader2, Check, Search, SortAsc, SortDesc } from 'lucide-react'
 
 const amenityIcons = {
@@ -440,6 +442,22 @@ export default function RoomsPage() {
               ))}
             </div>
           )}
+
+          {/* Reviews Section */}
+          <div className="mt-12">
+            <Reviews hotelId={hotelId!} />
+          </div>
+
+          {/* Create Review Section */}
+          <div className="mt-8">
+            <CreateReview 
+              hotelId={hotelId!} 
+              onReviewCreated={() => {
+                // This will trigger a refetch of reviews when a new review is created
+                window.location.reload()
+              }}
+            />
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (

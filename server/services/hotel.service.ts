@@ -74,6 +74,11 @@ export const hotelService = {
         _count: {
           select: { reviews: true },
         },
+        rooms : {
+          select :{
+            pricePerNight : true
+          }
+        }
       },
     });
 

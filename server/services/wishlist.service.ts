@@ -10,24 +10,50 @@ export const wishlistService = {
         })
         return wishlist
     },
-    getWishlistByUserId : async (userId:string) => {
-        const wishlists = await prisma.wishlist.findMany({
-            where: {
-                userId:userId
-            },
-            include:{
-                hotel:{
-                    include:{
-                        images:{
-                            where:{isPrimary:true},
-                            take:1
-                        }
+    getWishlistByUserId: async (userId: string, query: any) => {
+        const { city, page = 1, limit = 9 } = query
+        const pageNum = Number(page) || 1
+        const limitNum = Number(limit) || 9
+      
+        const whereClause: any = { userId }  
+        if (city) {
+          whereClause.hotel = Array.isArray(city)
+            ? { city: { in: city } }
+            : { city: { contains: city, mode: 'insensitive' } }
+        }
+      
+        const [wishlists, total] = await Promise.all([
+          prisma.wishlist.findMany({
+            where: whereClause,
+            skip: (pageNum - 1) * limitNum,  
+            take: limitNum,                 
+            include: {
+              hotel: {
+                include: {
+                  images: {
+                    where: { isPrimary: true },
+                    take: 1,
+                  },
+                  rooms: {
+                    select: {
+                        pricePerNight: true,
                     }
-                }
-            }
-        })
-        return wishlists
-    },
+                  }
+                },
+              },
+            },
+          }),
+          prisma.wishlist.count({ where: whereClause }),
+        ])
+      
+        return {
+          data: wishlists,
+          total,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(total / limitNum),
+        }
+      },
     unWishlist : async (hotelId:string,userId:string) => {
         const wishlist = await prisma.wishlist.delete({
             where: {
