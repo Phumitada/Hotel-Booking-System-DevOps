@@ -52,13 +52,13 @@ export const authService = {
     })
 
     if (!user) {
-      throw new Error('Invalid credentials')
+      throw new Error('Username not existed')
     }
 
     const isMatch = await bcrypt.compare(payload.password, user.password)
 
     if (!isMatch) {
-      throw new Error('Invalid credentials')
+      throw new Error('Incorrect password')
     }
 
     const accessToken = generateAccessToken({

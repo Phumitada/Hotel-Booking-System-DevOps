@@ -17,6 +17,7 @@ interface FilterDropdownProps {
   className?: string
   isOpen?: boolean
   onToggle?: () => void
+  multiple?: boolean
 }
 
 export default function FilterDropdown({ 
@@ -26,7 +27,8 @@ export default function FilterDropdown({
   onSelectionChange,
   className = "",
   isOpen: controlledIsOpen,
-  onToggle: controlledOnToggle
+  onToggle: controlledOnToggle,
+  multiple = true
 }: FilterDropdownProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -56,10 +58,15 @@ export default function FilterDropdown({
   }
 
   const handleToggleOption = (value: string) => {
-    const newValues = selectedValues.includes(value)
-      ? selectedValues.filter(v => v !== value)
-      : [...selectedValues, value]
-    onSelectionChange(newValues)
+    if (multiple) {
+      const newValues = selectedValues.includes(value)
+        ? selectedValues.filter(v => v !== value)
+        : [...selectedValues, value]
+      onSelectionChange(newValues)
+    } else {
+      
+      onSelectionChange([value])
+    }
   }
 
   const handleClear = () => {
@@ -72,13 +79,13 @@ export default function FilterDropdown({
       <Button
         variant="outline"
         onClick={handleToggle}
-        className="flex items-center space-x-2 min-w-[160px] border-gray-200 hover:border-primary hover:bg-primary/5"
+        className={`flex items-center space-x-2 ${multiple ? 'min-w-[160px]' : 'min-w-[200px]'} border-gray-200 hover:border-primary hover:bg-primary/5`}
       >
         <Filter className="w-4 h-4" />
         <span>{title}</span>
         {selectedValues.length > 0 && (
           <Badge variant="secondary" className="ml-1 bg-primary/10 text-primary border-primary/20">
-            {selectedValues.length}
+            {multiple ? selectedValues.length : (options.find(o => o.id === selectedValues[0])?.label || selectedValues[0])}
           </Badge>
         )}
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -109,10 +116,14 @@ export default function FilterDropdown({
                 >
                   <div className="flex items-center space-x-2">
                     <input
-                      type="checkbox"
+                      type={multiple ? "checkbox" : "radio"}
+                      name={multiple ? undefined : `radio-${title}`}
                       checked={selectedValues.includes(option.id)}
                       onChange={() => handleToggleOption(option.id)}
-                      className="rounded border-border text-primary focus:ring-primary"
+                      className={multiple 
+                        ? "rounded border-border text-primary focus:ring-primary" 
+                        : "border-border text-primary focus:ring-primary"
+                      }
                     />
                     <span className="text-sm text-foreground">{option.label}</span>
                   </div>

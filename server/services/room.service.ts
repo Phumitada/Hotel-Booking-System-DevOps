@@ -60,7 +60,6 @@ export const roomService = {
       if (maxPrice) where.pricePerNight.lte = Number(maxPrice)
     }
 
-    // Build orderBy object
     let orderBy: any = {}
     if (sortBy === 'pricePerNight') {
       orderBy.pricePerNight = sortOrder
@@ -71,7 +70,7 @@ export const roomService = {
     } else if (sortBy === 'type') {
       orderBy.type = sortOrder
     } else {
-      orderBy.pricePerNight = sortOrder // default
+      orderBy.pricePerNight = sortOrder 
     }
 
     const [rooms, total] = await Promise.all([

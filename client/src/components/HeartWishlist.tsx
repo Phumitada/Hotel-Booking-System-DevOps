@@ -14,7 +14,6 @@ export default function HeartWishlist({ hotelId, className = '' }: HeartWishlist
   const unWishlistMutation = useUnWishlist()
   const [isWishlisted, setIsWishlisted] = useState(false)
 
-  // Check if hotel is in wishlist
   useEffect(() => {
     if (wishlistItems) {
       const hotelInWishlist = wishlistItems.data?.some((item: any) => item.hotelId === hotelId)

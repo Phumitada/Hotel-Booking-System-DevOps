@@ -33,7 +33,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-2">
-      {/* Left side - Hotel Branding */}
+      {}
       <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-blue-600 to-blue-800 text-white p-12 relative overflow-hidden">
         <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
         <div className="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
@@ -78,7 +78,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right side - Login Form */}
+      {}
       <div className="flex items-center justify-center p-6 lg:p-12 bg-gray-50">
         <Card className="w-full max-w-md shadow-lg border-0">
           <CardHeader className="space-y-1 text-center">

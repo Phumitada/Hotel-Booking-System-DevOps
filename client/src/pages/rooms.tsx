@@ -27,8 +27,7 @@ export default function RoomsPage() {
   const { hotelId } = useParams<{ hotelId: string }>()
   const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
-  
-  // State for filters and sorting
+
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
   const [selectedCapacities, setSelectedCapacities] = useState<string[]>([])
@@ -38,24 +37,21 @@ export default function RoomsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState(1)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  
-  // Debounce price range changes
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedPriceRange(priceRange)
       setCurrentPage(1)
-    }, 300) // 300ms delay for slider
+    }, 300) 
 
     return () => clearTimeout(timer)
   }, [priceRange])
   
   const { data: hotel, isLoading: hotelLoading } = useHotelDetail(hotelId!)
-  
-  // Get all rooms for filter counts
+
   const { data: allRoomsData } = useRooms(hotelId!, { page: 1, limit: 1000 })
   const allRooms = allRoomsData?.data || []
 
-  // Calculate price range from available rooms
   const { minRoomPrice, maxRoomPrice } = useMemo(() => {
     if (allRooms.length === 0) return { minRoomPrice: 0, maxRoomPrice: 10000 }
     const prices = allRooms.map((r: any) => r.pricePerNight)
@@ -64,16 +60,14 @@ export default function RoomsPage() {
       maxRoomPrice: Math.max(...prices)
     }
   }, [allRooms])
-  
-  // Initialize price range if not set
+
   useEffect(() => {
     if (priceRange.min === 0 && priceRange.max === 10000 && (minRoomPrice > 0 || maxRoomPrice < 10000)) {
       setPriceRange({ min: minRoomPrice, max: maxRoomPrice })
       setDebouncedPriceRange({ min: minRoomPrice, max: maxRoomPrice })
     }
   }, [minRoomPrice, maxRoomPrice])
-  
-  // Build query object
+
   const roomQuery = {
     name: searchTerm || undefined,
     type: selectedTypes.length > 0 ? selectedTypes : undefined,
@@ -92,7 +86,6 @@ export default function RoomsPage() {
   const totalPages = roomsData?.totalPages || 1
   const isLoading = hotelLoading || roomsLoading
 
-  // Get unique types and capacities for filters
   const roomTypes = Array.from(new Set(allRooms.map((r: any) => r.type)))
     .map(type => ({ id: type, label: type, count: allRooms.filter((r: any) => r.type === type).length }))
 
@@ -109,8 +102,7 @@ export default function RoomsPage() {
       navigate('/login')
       return
     }
-    
-    // Navigate to booking page with room details
+
     navigate(`/booking/${hotelId}/${roomId}`)
   }
 
@@ -182,7 +174,7 @@ export default function RoomsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center space-x-4">
@@ -210,7 +202,7 @@ export default function RoomsPage() {
         </div>
       </div>
 
-      {/* Hotel Info */}
+      {}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <div className="grid gap-6 lg:grid-cols-2">
@@ -265,7 +257,7 @@ export default function RoomsPage() {
           </div>
         </div>
 
-        {/* Rooms Section */}
+        {}
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Available Rooms</h2>
@@ -274,7 +266,7 @@ export default function RoomsPage() {
             </div>
           </div>
 
-          {/* Search and Filters */}
+          {}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex flex-col lg:flex-row gap-4 mb-6">
               <div className="flex-1 relative">
@@ -307,7 +299,7 @@ export default function RoomsPage() {
               </div>
             </div>
 
-            {/* Price Range and Sorting */}
+            {}
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <div className="flex-1 max-w-md">
                 <PriceRangeSlider
@@ -443,23 +435,23 @@ export default function RoomsPage() {
             </div>
           )}
 
-          {/* Reviews Section */}
+          {}
           <div className="mt-12">
             <Reviews hotelId={hotelId!} />
           </div>
 
-          {/* Create Review Section */}
+          {}
           <div className="mt-8">
             <CreateReview 
               hotelId={hotelId!} 
               onReviewCreated={() => {
-                // This will trigger a refetch of reviews when a new review is created
+                
                 window.location.reload()
               }}
             />
           </div>
 
-          {/* Pagination */}
+          {}
           {totalPages > 1 && (
             <div className="mt-8">
               <Pagination

@@ -91,16 +91,14 @@ export default function HotelsPage() {
     amenities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
   });
 
-  // Get all hotels for filter counts (without pagination)
   const { data: allHotelsData } = useHotels({
     page: 1,
-    limit: 1000, // Get all hotels for accurate counts
+    limit: 1000, 
   });
 
   const hotels = hotelsData?.data || [];
   const totalPages = hotelsData?.totalPages || 1;
 
-  // Get unique cities, ratings, and amenities for filters from all hotels
   const allHotels = allHotelsData?.data || [];
   const cities = Array.from(
     new Set(allHotels.map((h: any) => h.city).filter(Boolean)),
@@ -134,22 +132,22 @@ export default function HotelsPage() {
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    setCurrentPage(1); // Reset page when search changes
+    setCurrentPage(1); 
   };
 
   const handleCityChange = (cities: string[]) => {
-    setSelectedCities(cities); // Allow multiple cities
-    setCurrentPage(1); // Reset page when city filter changes
+    setSelectedCities(cities); 
+    setCurrentPage(1); 
   };
 
   const handleRatingChange = (ratings: string[]) => {
-    setSelectedRatings(ratings); // Allow multiple ratings
-    setCurrentPage(1); // Reset page when rating filter changes
+    setSelectedRatings(ratings); 
+    setCurrentPage(1); 
   };
 
   const handleAmenityChange = (amenities: string[]) => {
     setSelectedAmenities(amenities);
-    setCurrentPage(1); // Reset page when amenity filter changes
+    setCurrentPage(1); 
   };
 
   const handleDropdownToggle = (dropdownId: string) => {
@@ -180,7 +178,7 @@ export default function HotelsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
@@ -199,7 +197,7 @@ export default function HotelsPage() {
         </div>
       </div>
 
-      {/* Search and Filters */}
+      {}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           <div className="flex-1 relative">
@@ -240,7 +238,7 @@ export default function HotelsPage() {
           </div>
         </div>
 
-        {/* Hotels Grid */}
+        {}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-stretch">
           {hotels.map((hotel: any) => (
             <Card
@@ -271,7 +269,7 @@ export default function HotelsPage() {
                     </div>
                   )}
 
-                  {/* Heart Wishlist Button - Top Right */}
+                  {}
                   <div
                     className="absolute top-2 right-2"
                     onClick={(e) => e.stopPropagation()}
@@ -353,7 +351,7 @@ export default function HotelsPage() {
           ))}
         </div>
 
-        {/* Pagination */}
+        {}
         {totalPages > 1 && (
           <div className="mt-8">
             <Pagination

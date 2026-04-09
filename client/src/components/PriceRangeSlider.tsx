@@ -13,7 +13,6 @@ export default function PriceRangeSlider({ min, max, value, onChange, className 
   const [isDragging, setIsDragging] = useState<'min' | 'max' | null>(null)
   const sliderRef = useRef<HTMLDivElement>(null)
 
-  // Update local value when prop changes
   useEffect(() => {
     setLocalValue(value)
   }, [value])
@@ -77,8 +76,7 @@ export default function PriceRangeSlider({ min, max, value, onChange, className 
           const rect = sliderRef.current!.getBoundingClientRect()
           const percentage = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
           const newValue = min + percentage * (max - min)
-          
-          // Determine which handle is closer
+
           const distanceToMin = Math.abs(newValue - localValue.min)
           const distanceToMax = Math.abs(newValue - localValue.max)
           
@@ -95,10 +93,10 @@ export default function PriceRangeSlider({ min, max, value, onChange, className 
           }
         }}
       >
-        {/* Track background */}
+        {}
         <div className="absolute top-3 left-0 right-0 h-2 bg-gray-200 rounded-full" />
         
-        {/* Active range */}
+        {}
         <div 
           className="absolute top-3 h-2 bg-blue-500 rounded-full pointer-events-none"
           style={{
@@ -107,7 +105,7 @@ export default function PriceRangeSlider({ min, max, value, onChange, className 
           }}
         />
         
-        {/* Min handle */}
+        {}
         <div 
           className={`absolute top-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md transition-colors hover:bg-blue-600 cursor-grab active:cursor-grabbing ${
             isDragging === 'min' ? 'bg-blue-600 scale-110' : ''
@@ -116,7 +114,7 @@ export default function PriceRangeSlider({ min, max, value, onChange, className 
           onMouseDown={handleMouseDown('min')}
         />
         
-        {/* Max handle */}
+        {}
         <div 
           className={`absolute top-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md transition-colors hover:bg-blue-600 cursor-grab active:cursor-grabbing ${
             isDragging === 'max' ? 'bg-blue-600 scale-110' : ''

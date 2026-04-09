@@ -25,11 +25,29 @@ export const hotelService = {
   },
 
   getHotels: async (query: QueryHotelPayload) => {
-    const { city, country, starRating, amenities, page = 1, limit = 10 } = query;
+    const { 
+      city, 
+      country, 
+      starRating, 
+      amenities, 
+      page = 1, 
+      limit = 10,
+      search,
+      minPrice,
+      maxPrice,
+      sortBy = 'name',
+      sortOrder = 'asc',
+      ids,
+      guests
+    } = query;
     const pageNum = Number(page) || 1;
     const limitNum = Number(limit) || 10;
     
     const whereClause: any = {};
+    
+    if (ids && ids.length > 0) {
+      whereClause.id = { in: ids };
+    }
     
     if (city) {
       if (Array.isArray(city)) {
@@ -60,11 +78,84 @@ export const hotelService = {
       };
     }
     
+    if (search) {
+      whereClause.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { address: { contains: search, mode: "insensitive" } },
+        { city: { contains: search, mode: "insensitive" } }
+      ];
+    }
+    
+    if (guests) {
+      const guestCounts = Array.isArray(guests) ? guests : [guests];
+      const roomCapacityConditions = guestCounts.map(count => {
+        if (count >= 5) {
+          return { capacity: { gte: 5 } };
+        }
+        return { capacity: count };
+      });
+      
+      whereClause.rooms = {
+        some: {
+          OR: roomCapacityConditions
+        }
+      };
+    }
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      const roomFilter: any = {};
+      if (minPrice !== undefined) {
+        roomFilter.pricePerNight = { gte: minPrice };
+      }
+      if (maxPrice !== undefined) {
+        roomFilter.pricePerNight = { ...roomFilter.pricePerNight, lte: maxPrice };
+      }
+      
+      if (whereClause.rooms) {
+        if (whereClause.rooms.some.OR) {
+          
+          whereClause.rooms.some.AND = [roomFilter];
+        } else {
+          
+          whereClause.rooms.some = { ...whereClause.rooms.some, ...roomFilter };
+        }
+      } else {
+        whereClause.rooms = { some: roomFilter };
+      }
+    }
+
+    let orderBy: any = {};
+    
+    if (sortBy === 'price') {
+
+      orderBy = {
+        name: sortOrder === 'desc' ? 'desc' : 'asc'
+      };
+    } else if (sortBy === 'starRating') {
+      orderBy = {
+        starRating: sortOrder
+      };
+    } else if (sortBy === 'name') {
+      orderBy = {
+        name: sortOrder
+      };
+    } else if (sortBy === 'createdAt') {
+      orderBy = {
+        createdAt: sortOrder
+      };
+    } else {
+      
+      orderBy = {
+        name: 'asc'
+      };
+    }
+    
     const hotels = await prisma.hotel.findMany({
       where: whereClause,
       skip: (pageNum - 1) * limitNum,
       take: limitNum,
-      orderBy: { name: "asc" },
+      orderBy,
       include: {
         images: {
           where: { isPrimary: true },

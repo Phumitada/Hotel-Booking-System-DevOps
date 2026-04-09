@@ -1,4 +1,6 @@
-import 'dotenv/config'
+import { config } from 'dotenv'
+import { fileURLToPath } from 'url'
+import path from 'path'
 import { PrismaClient } from '../generated/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'

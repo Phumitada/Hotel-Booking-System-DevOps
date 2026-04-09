@@ -69,6 +69,7 @@ export const reviewService = {
         include: {
           user: {
             select: {
+                id: true,
               name: true,
             },
           },

@@ -55,7 +55,6 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
 
   const activeRating = hoveredStar || rating
 
-  // ── Not logged in ──
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-between px-4 py-3 border border-gray-200 rounded-md bg-white">
@@ -70,7 +69,6 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
     )
   }
 
-  // ── No completed stay ──
   if (bookingsData && !completedBookingForHotel) {
     return (
       <div className="flex items-center gap-2 px-4 py-3 border border-gray-200 rounded-md bg-gray-50">
@@ -82,7 +80,6 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
     )
   }
 
-  // ── Collapsed trigger bar ──
   if (!isExpanded) {
     return (
       <button
@@ -104,10 +101,9 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
     )
   }
 
-  // ── Expanded form ──
   return (
     <div className="border border-gray-200 rounded-md bg-white overflow-hidden">
-      {/* Form header */}
+      {}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50">
         <div className="flex items-center gap-2">
           <PenLine className="w-4 h-4 text-gray-500" />
@@ -122,7 +118,7 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
       </div>
 
       <form onSubmit={handleSubmit} className="p-4 space-y-4">
-        {/* Star rating row */}
+        {}
         <div className="flex items-center gap-3">
           <span className="text-xs font-medium text-gray-500 uppercase tracking-wide w-14 shrink-0">
             Rating
@@ -147,10 +143,10 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
           )}
         </div>
 
-        {/* Divider */}
+        {}
         <div className="border-t border-gray-100" />
 
-        {/* Comment */}
+        {}
         <div className="flex gap-3">
           <span className="text-xs font-medium text-gray-500 uppercase tracking-wide w-14 shrink-0 pt-2">
             Review
@@ -170,7 +166,7 @@ export default function CreateReview({ hotelId, onReviewCreated }: CreateReviewP
           </div>
         </div>
 
-        {/* Submit */}
+        {}
         <div className="flex justify-end pt-1">
           <Button
             type="submit"

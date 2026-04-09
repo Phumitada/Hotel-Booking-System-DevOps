@@ -98,8 +98,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans overflow-x-hidden">
-
-      {/* ───────── HERO — bg-primary ───────── */}
       <section className="relative bg-primary text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
           <img
@@ -108,19 +106,13 @@ export default function HomePage() {
             className="w-full h-full object-cover"
           />
         </div>
-        {/* decorative circles */}
         <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-primary-foreground/5 blur-3xl" />
         <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-primary-foreground/5 blur-2xl" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 text-center">
-          <span className="inline-flex items-center gap-2 text-xs tracking-[0.3em] uppercase font-medium border border-primary-foreground/20 px-4 py-2 rounded-full mb-8 bg-primary-foreground/10 backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-            Hotel Booking System
-          </span>
-
           <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-light leading-tight mb-6">
             <span className="block">Find Your</span>
-            <span className="block font-semibold text-secondary">Perfect Stay</span>
+            <span className="block font-semibold">Perfect Stay</span>
           </h1>
 
           <p className="text-lg md:text-xl text-primary-foreground/70 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -150,16 +142,12 @@ export default function HomePage() {
             )}
           </div>
         </div>
-
-        {/* wave bottom */}
         <div className="relative z-10">
           <svg viewBox="0 0 1440 60" className="w-full fill-background" preserveAspectRatio="none" height="60">
             <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" />
           </svg>
         </div>
       </section>
-
-      {/* ───────── STATS — bg-background ───────── */}
       <section className="bg-background py-16">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((s, i) => (
@@ -172,8 +160,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* ───────── DESTINATIONS — bg-primary ───────── */}
       <section className="bg-primary text-primary-foreground py-24 px-6 relative">
         <div className="absolute top-0 left-0 w-full">
           <svg viewBox="0 0 1440 60" className="w-full fill-background" preserveAspectRatio="none" height="60"
@@ -223,8 +209,6 @@ export default function HomePage() {
           </svg>
         </div>
       </section>
-
-      {/* ───────── FEATURES — bg-background ───────── */}
       <section className="bg-background py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12 text-center">
@@ -250,8 +234,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ───────── AMENITIES — bg-primary ───────── */}
       <section className="bg-primary text-primary-foreground py-24 px-6 relative">
         <div className="absolute top-0 left-0 w-full">
           <svg viewBox="0 0 1440 60" className="w-full fill-background" preserveAspectRatio="none" height="60"
@@ -285,8 +267,6 @@ export default function HomePage() {
           </svg>
         </div>
       </section>
-
-      {/* ───────── TECH STACK — bg-background ───────── */}
       <section className="bg-background py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
@@ -305,8 +285,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ───────── CTA — bg-primary ───────── */}
       <section className="bg-primary text-primary-foreground py-28 px-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full">
           <svg viewBox="0 0 1440 60" className="w-full fill-background" preserveAspectRatio="none" height="60"
@@ -344,8 +322,6 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-
-      {/* ───────── FOOTER — bg-background ───────── */}
       <footer className="bg-background border-t border-border py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-muted-foreground text-sm tracking-widest uppercase font-heading">

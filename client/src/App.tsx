@@ -5,6 +5,7 @@ import HomePage from '@/pages/home'
 import LoginPage from '@/pages/login'
 import RegisterPage from '@/pages/register'
 import HotelsPage from '@/pages/hotels'
+import ExplorePage from '@/pages/explore'
 import RoomsPage from '@/pages/rooms'
 import BookingPage from '@/pages/Booking'
 import BookingsPage from '@/pages/bookings'
@@ -32,6 +33,11 @@ function App() {
         <Route path="/hotels" element={
           <MainLayout>
             <HotelsPage />
+          </MainLayout>
+        } />
+        <Route path="/explore" element={
+          <MainLayout>
+            <ExplorePage />
           </MainLayout>
         } />
         <Route path="/hotels/:hotelId/rooms" element={

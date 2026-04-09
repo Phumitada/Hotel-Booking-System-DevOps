@@ -85,7 +85,6 @@ export default function WishlistPage() {
     )
   }
 
-  // ── data ────────────────────────────────────────────────────
   const wishlistItems: WishlistItem[] = wishlistData?.data || []
   const allWishlistItems: WishlistItem[] = allWishlistData?.data || []
   const totalPages = wishlistData?.totalPages || 1
@@ -106,7 +105,6 @@ export default function WishlistPage() {
   const handleSearchChange = (value: string) => { setSearchTerm(value); setCurrentPage(1) }
   const clearFilters = () => { setSearchTerm(''); setSelectedCities([]); setCurrentPage(1) }
 
-  // ── empty state ─────────────────────────────────────────────
   if (wishlistItems.length === 0 && !hasActiveFilters) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -124,12 +122,11 @@ export default function WishlistPage() {
     )
   }
 
-  // ── render ──────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
+        {}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">My Wishlist</h1>
           <p className="text-gray-600">
@@ -137,7 +134,7 @@ export default function WishlistPage() {
           </p>
         </div>
 
-        {/* Search and Filters */}
+        {}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 relative">
@@ -169,7 +166,7 @@ export default function WishlistPage() {
           </div>
         </div>
 
-        {/* Grid */}
+        {}
         {wishlistItems.length === 0 ? (
           <div className="text-center py-12">
             <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
@@ -260,7 +257,7 @@ export default function WishlistPage() {
           </div>
         )}
 
-        {/* Pagination */}
+        {}
         {totalPages > 1 && (
           <div className="mt-8">
             <Pagination

@@ -80,11 +80,7 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
-    // if (error.response?.status !== 401) {
-    //   if (import.meta.env.DEV) {
-    //     console.error("API Error:", error)
-    //   }
-    // }
+
     return Promise.reject(error)
   }
 );

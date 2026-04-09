@@ -1,7 +1,6 @@
 import { useAuthStore } from '@/stores/auth.store'
 import { Navigate, Outlet } from 'react-router-dom'
 
-
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuthStore()
 

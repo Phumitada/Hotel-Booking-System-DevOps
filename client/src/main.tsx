@@ -5,7 +5,6 @@ import App from './App'
 import './index.css'
 import { setupConsoleFilter } from './utils/console-filter'
 
-// Setup console filter to hide 401 errors
 setupConsoleFilter()
 
 const queryClient = new QueryClient({

@@ -40,7 +40,7 @@ export default function Pagination({
 
   return (
     <div className={cn('flex items-center justify-center space-x-1', className)}>
-      {/* Previous Button */}
+      {}
       <Button
         variant="outline"
         size="sm"
@@ -51,7 +51,7 @@ export default function Pagination({
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      {/* Page Numbers */}
+      {}
       {visiblePages.map((page, index) => {
         if (page === '...') {
           return (
@@ -82,7 +82,7 @@ export default function Pagination({
         )
       })}
 
-      {/* Next Button */}
+      {}
       <Button
         variant="outline"
         size="sm"

@@ -31,4 +31,11 @@ export interface QueryHotelPayload {
     amenities?: string | string[];
     page?: number;
     limit?: number;
+    search?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    ids?: string[];
+    guests?: number | number[];
 }

@@ -73,7 +73,7 @@ export default function BookingsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h1 className="text-2xl font-bold text-gray-900">My Bookings</h1>
@@ -99,7 +99,7 @@ export default function BookingsPage() {
               <Card key={booking.id} className="overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
-                    {/* Hotel Image */}
+                    {}
                     <div className="flex-shrink-0">
                       {booking.room?.hotel?.images?.length > 0 ? (
                         <img
@@ -114,7 +114,7 @@ export default function BookingsPage() {
                       )}
                     </div>
 
-                    {/* Booking Details */}
+                    {}
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-4">
                         <div>
@@ -180,7 +180,7 @@ export default function BookingsPage() {
               </Card>
             ))}
 
-            {/* Pagination */}
+            {}
             {totalPages > 1 && (
               <div className="mt-8">
                 <Pagination

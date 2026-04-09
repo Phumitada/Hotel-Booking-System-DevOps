@@ -22,7 +22,7 @@ const Navbar = () => {
   const navLinks = [
     { path: '/', label: 'Home', icon: Home },
     { path: '/hotels', label: 'Hotels', icon: Hotel },
-    { path: '/search', label: 'Search', icon: Search },
+    { path: '/explore', label: 'Explore', icon: Search },
     { path: '/wishlist', label: 'Wishlist', icon: Calendar },
     { path: '/bookings', label: 'Bookings', icon: Calendar },
   ]
@@ -31,7 +31,7 @@ const Navbar = () => {
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {}
           <Link 
             to="/" 
             className="flex items-center space-x-2 text-primary hover:text-primary-hover/80 transition-colors"
@@ -42,7 +42,7 @@ const Navbar = () => {
             <span className="text-xl font-bold text-blue-600">HotelBooking</span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => {
               const Icon = link.icon
@@ -63,7 +63,7 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* Desktop Auth Buttons */}
+          {}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
@@ -106,7 +106,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -121,7 +121,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {}
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
