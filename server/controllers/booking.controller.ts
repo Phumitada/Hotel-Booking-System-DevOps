@@ -75,4 +75,23 @@ export const bookingController = {
         .json({ success: false, message: (error as Error).message });
     }
   },
+  getAllBookings: async (req: Request, res: Response) => {
+    try {
+      const bookings = await bookingService.getAllBookings(req.query as any)
+      res.json({ success: true, data: bookings })
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message })
+    }
+  },
+  
+  updateBookingStatus: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params
+      const { status } = req.body
+      const booking = await bookingService.updateBookingStatus(id, status)
+      res.json({ success: true, data: booking })
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message })
+    }
+  },
 };

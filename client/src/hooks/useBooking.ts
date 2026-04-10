@@ -50,3 +50,25 @@ export const useCancelBooking = () => {
     },
   })
 }
+
+export const useAdminBookings = (query: BookingQuery) => {
+  return useQuery({
+    queryKey: ['admin-bookings', query],
+    queryFn: () => bookingService.getAllBookings(query),
+  })
+}
+ 
+export const useUpdateBookingStatus = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      bookingService.updateBookingStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-bookings'] })
+      toast.success('Status updated')
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to update status')
+    },
+  })
+}

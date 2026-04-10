@@ -8,6 +8,7 @@ import roomRoutes from './routes/room.routes'
 import bookingRoutes from './routes/booking.routes'
 import wishlistRoutes from './routes/wishlist.routes'
 import reviewRoutes from './routes/review.routes'
+import paymentRoutes from './routes/payment.routes'
 
 dotenv.config()
 
@@ -32,6 +33,7 @@ app.use('/api/hotels', roomRoutes)
 app.use('/api/bookings', bookingRoutes)
 app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/reviews', reviewRoutes)
+app.use('/api/payment',paymentRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)

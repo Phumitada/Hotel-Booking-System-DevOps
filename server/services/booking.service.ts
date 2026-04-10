@@ -129,4 +129,45 @@ export const bookingService = {
     });
     return updatedBooking;
   },
+  updateBookingStatus: async (bookingId: string, status: "CONFIRMED" | "CANCELLED") => {
+    return await prisma.booking.update({
+      where: { id: bookingId },
+      data: { status },
+    });
+  },
+  getAllBookings: async (query: BookingQuery) => {
+    const { status, page = 1, limit = 10 } = query
+    const [bookings, total] = await Promise.all([
+      prisma.booking.findMany({
+        where: { status: status ? status : undefined },
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+        orderBy: { createdAt: 'desc' },
+        include: {
+          room: {
+            include: {
+              hotel: {
+                include: {
+                  images: { where: { isPrimary: true }, take: 1 },
+                },
+              },
+            },
+          },
+          user: {
+            select: { id: true, name: true, email: true },
+          },
+        },
+      }),
+      prisma.booking.count({
+        where: { status: status ? status : undefined },
+      }),
+    ])
+    return {
+      data: bookings,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit)),
+    }
+  },
 };

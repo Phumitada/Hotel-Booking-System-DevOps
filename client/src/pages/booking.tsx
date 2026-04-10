@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useHotelDetail } from "@/hooks/useHotel";
 import { useRoomDetail } from "@/hooks/useRoom";
 import { useCreateBooking } from "@/hooks/useBooking";
+import { useCreateCharge } from "@/hooks/usePayment";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,6 +25,8 @@ import {
   MapPin,
   Star,
   Loader2,
+  CreditCard,
+  Lock,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -48,6 +51,10 @@ export default function BookingPage() {
   const [checkOut, setCheckOut] = useState(format(tomorrow, "yyyy-MM-dd"));
 
   const [guests, setGuests] = useState(1);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [bookingData, setBookingData] = useState<any>(null);
+  const [cardName, setCardName] = useState("");
+  const [omiseLoaded, setOmiseLoaded] = useState(false);
 
   const { data: hotel, isLoading: hotelLoading } = useHotelDetail(hotelId!);
   const { data: room, isLoading: roomLoading } = useRoomDetail(
@@ -55,6 +62,21 @@ export default function BookingPage() {
     roomId!
   );
   const createBookingMutation = useCreateBooking();
+  const createChargeMutation = useCreateCharge();
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.omise.co/omise.js';
+    script.async = true;
+    script.onload = () => {
+      setOmiseLoaded(true);
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   if (!isAuthenticated) {
     navigate("/login");
@@ -95,14 +117,57 @@ export default function BookingPage() {
         guests,
       },
       {
-        onSuccess: () => {
-          navigate("/bookings");
+        onSuccess: (booking: any) => {
+          setBookingData(booking);
+          setShowPaymentForm(true);
         },
         onError: (error: any) => {
           alert(error.message || "Failed to create booking");
         },
       }
     );
+  };
+
+  const handlePayment = async () => {
+    if (!omiseLoaded) {
+      alert("Payment system is loading. Please wait...");
+      return;
+    }
+
+    if (!cardName.trim()) {
+      alert("Please enter cardholder name");
+      return;
+    }
+
+    if (!(window as any).Omise) {
+      alert("Payment system not available");
+      return;
+    }
+
+    try {
+      const totalAmount = calculateTotal() * 100; // Convert to satang
+      
+      (window as any).Omise.createToken('card', {
+        name: cardName,
+        number: (document.getElementById('card-number') as HTMLInputElement).value,
+        expiration_month: (document.getElementById('card-expiry-month') as HTMLInputElement).value,
+        expiration_year: (document.getElementById('card-expiry-year') as HTMLInputElement).value,
+        security_code: (document.getElementById('card-cvv') as HTMLInputElement).value,
+      }, (statusCode: number, response: any) => {
+        if (statusCode === 200) {
+          createChargeMutation.mutate({
+            bookingId: bookingData.id,
+            amount: totalAmount,
+            token: response.id,
+            return_uri: `${window.location.origin}/payment-verify?bookingId=${bookingData.id}`
+          });
+        } else {
+          alert('Payment failed: ' + response.message);
+        }
+      });
+    } catch (error: any) {
+      alert('Payment error: ' + error.message);
+    }
   };
 
   const calculateTotal = () => {
@@ -273,27 +338,109 @@ export default function BookingPage() {
                   </div>
                 </div>
 
-                <Button
-                  onClick={handleBooking}
-                  disabled={
-                    createBookingMutation.isPending || !checkIn || !checkOut
-                  }
-                  className="w-full"
-                >
-                  {createBookingMutation.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    "Confirm Booking"
-                  )}
-                </Button>
+                {!showPaymentForm ? (
+                  <Button
+                    onClick={handleBooking}
+                    disabled={
+                      createBookingMutation.isPending || !checkIn || !checkOut
+                    }
+                    className="w-full"
+                  >
+                    {createBookingMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Proceed to Payment"
+                    )}
+                  </Button>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="border-t pt-4">
+                      <h4 className="font-medium mb-4 flex items-center">
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        Payment Information
+                      </h4>
+                      <div className="space-y-3">
+                        <div>
+                          <Label htmlFor="card-name">Cardholder Name</Label>
+                          <Input
+                            id="card-name"
+                            value={cardName}
+                            onChange={(e) => setCardName(e.target.value)}
+                            placeholder="John Doe"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="card-number">Card Number</Label>
+                          <Input
+                            id="card-number"
+                            type="text"
+                            placeholder="4242 4242 4242 4242"
+                            maxLength={16}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label htmlFor="card-expiry-month">MM</Label>
+                            <Input
+                              id="card-expiry-month"
+                              type="text"
+                              placeholder="12"
+                              maxLength={2}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="card-expiry-year">YY</Label>
+                            <Input
+                              id="card-expiry-year"
+                              type="text"
+                              placeholder="25"
+                              maxLength={2}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="card-cvv">CVV</Label>
+                          <Input
+                            id="card-cvv"
+                            type="text"
+                            placeholder="123"
+                            maxLength={3}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handlePayment}
+                      disabled={createChargeMutation.isPending || !omiseLoaded}
+                      className="w-full"
+                    >
+                      {createChargeMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Processing Payment...
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="h-4 w-4 mr-2" />
+                          Pay ฿{calculateTotal().toLocaleString()}
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-gray-500 text-center flex items-center justify-center">
+                      <Lock className="h-3 w-3 mr-1" />
+                      Secured by Omise Payment Gateway
+                    </p>
+                  </div>
+                )}
 
-                <p className="text-xs text-gray-500 text-center">
-                  By confirming this booking, you agree to our terms and
-                  conditions
-                </p>
+                {!showPaymentForm && (
+                  <p className="text-xs text-gray-500 text-center">
+                    By proceeding, you agree to our terms and conditions
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>

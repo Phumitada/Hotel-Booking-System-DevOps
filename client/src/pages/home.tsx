@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import {
   ArrowRight, MapPin, Star, Shield, Zap, Hotel,
-  Wifi, Car, Coffee, Dumbbell, Users, ChevronRight
+  Wifi, Car, Coffee, Dumbbell, Users, ChevronRight,Banknote
 } from 'lucide-react'
 import chiang_mai  from '@/assets/imgs/chiang_mai.jpg'
 import pattaya from '@/assets/imgs/pattaya.jpg'
@@ -36,7 +36,11 @@ const features = [
     icon: Star,
     title: 'Verified Reviews',
     description: 'Authentic reviews only from guests who have completed their stay.',
-  },
+  },{
+    icon:Banknote,
+    title: 'Online Payment',
+    description: 'Using Omise payment gateway to implement selectable payment solutions.',
+  }
 ]
 
 const destinations = [
@@ -90,7 +94,7 @@ const amenities = [
 const techStack = [
   'React 18', 'TypeScript', 'Node.js', 'Express',
   'PostgreSQL', 'Prisma ORM', 'Tailwind CSS', 'React Query',
-  'Zod', 'JWT Auth', 'bcrypt', 'shadcn/ui',
+  'Zod', 'JWT Auth', 'bcrypt', 'shadcn/ui','Omise'
 ]
 
 export default function HomePage() {
@@ -216,7 +220,7 @@ export default function HomePage() {
             <h2 className="font-heading text-4xl md:text-5xl font-light text-foreground">Why This Platform</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {features.map((f, i) => {
               const Icon = f.icon
               return (
@@ -253,7 +257,7 @@ export default function HomePage() {
               const Icon = a.icon
               return (
                 <div key={i} className="flex flex-col items-center gap-3 p-5 rounded-lg border border-primary-foreground/10 bg-primary-foreground/5 hover:bg-primary-foreground/10 hover:border-secondary/50 transition-all duration-300 group">
-                  <Icon className="w-6 h-6 text-secondary group-hover:scale-110 transition-transform duration-300" />
+                  <Icon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
                   <span className="text-xs tracking-wider uppercase text-primary-foreground/70 text-center">{a.label}</span>
                 </div>
               )
@@ -304,7 +308,7 @@ export default function HomePage() {
 
         <div className="relative z-10 max-w-3xl mx-auto text-center pt-8">
           <h2 className="font-heading text-5xl md:text-7xl font-light mb-6">
-            Ready to <span className="text-secondary italic">explore?</span>
+            Ready to <span className="italic">explore?</span>
           </h2>
           <p className="text-primary-foreground/60 mb-10 text-lg leading-relaxed">
             Browse hotels, check availability, and experience a production-grade booking flow.

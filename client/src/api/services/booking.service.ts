@@ -20,4 +20,13 @@ export const bookingService = {
   cancelBooking: async (id: string): Promise<void> => {
     await api.delete(`/bookings/${id}`) 
   },
+  getAllBookings: async (query: BookingQuery): Promise<BookingListResponse> => {
+    const response = await api.get('/bookings/admin/all', { params: query })
+    return response.data.data
+  },
+   
+  updateBookingStatus: async (id: string, status: string): Promise<Booking> => {
+    const response = await api.put(`/bookings/${id}/status`, { status })
+    return response.data.data
+  },
 }

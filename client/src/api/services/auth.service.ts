@@ -29,10 +29,12 @@ export const authService = {
 
   getMe: async () => {
     const token = useAuthStore.getState().accessToken;
-    if(!token) return null;
+    if (!token) return null;
     try {
       const response = await axiosPublic.get("/auth/me");
-      return response.data.data;
+      const user = response.data.data;
+      if (!user) return null;
+      return { user, accessToken: token }  
     } catch {
       return null;
     }

@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { useBookings } from '@/hooks/useBooking'
+import { useBookings, useCancelBooking } from '@/hooks/useBooking'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Pagination from '@/components/ui/pagination'
 import { Calendar, MapPin, Users, Star, ArrowRight, Loader2, Check, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export default function BookingsPage() {
+  const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
   const [currentPage, setCurrentPage] = useState(1)
+  const [showCancelDialog, setShowCancelDialog] = useState<string | null>(null)
+  
+  const cancelBookingMutation = useCancelBooking()
   
   const { data: bookingsData, isLoading, error } = useBookings({ page: currentPage, limit: 10 })
   
@@ -18,6 +23,18 @@ export default function BookingsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
+  }
+
+  const handleCancelBooking = (bookingId: string) => {
+    cancelBookingMutation.mutate(bookingId, {
+      onSuccess: () => {
+        setShowCancelDialog(null)
+      }
+    })
+  }
+
+  const canCancelBooking = (status: string) => {
+    return status === 'PENDING' || status === 'CONFIRMED'
   }
 
   const getStatusColor = (status: string) => {
@@ -84,8 +101,8 @@ export default function BookingsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {bookings.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Calendar className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 bg-gray-100 rounded-none flex items-center justify-center mx-auto mb-4 border border-gray-300">
+              <Calendar className="w-8 h-8 text-gray-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No bookings found</h3>
             <p className="text-gray-600 mb-6">You haven't made any hotel reservations yet</p>
@@ -105,11 +122,11 @@ export default function BookingsPage() {
                         <img
                           src={booking.room.hotel.images.find((img: any) => img.isPrimary)?.url || booking.room.hotel.images[0].url}
                           alt={booking.room.hotel.name}
-                          className="w-32 h-32 object-cover rounded-lg"
+                          className="w-32 h-32 object-cover rounded-none"
                         />
                       ) : (
-                        <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <MapPin className="w-8 h-8 text-gray-400" />
+                        <div className="w-32 h-32 bg-gray-100 rounded-none flex items-center justify-center border border-gray-300">
+                          <MapPin className="w-8 h-8 text-gray-600" />
                         </div>
                       )}
                     </div>
@@ -127,9 +144,9 @@ export default function BookingsPage() {
                             {booking.room?.hotel?.city}, {booking.room?.hotel?.country}
                           </div>
                         </div>
-                        <Badge className={getStatusColor(booking.status)}>
+                        <div className={`inline-flex items-center space-x-2 px-2 py-1 text-xs font-semibold uppercase tracking-wide ${getStatusColor(booking.status).replace('border-', 'bg-').replace('text-', 'text-')}`}>
                           {booking.status}
-                        </Badge>
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -163,13 +180,40 @@ export default function BookingsPage() {
                         </div>
                         <div className="flex items-center space-x-2">
                           {booking.status === 'CONFIRMED' && (
-                            <Button variant="outline" size="sm">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => navigate(`/booking/${booking.id}`)}
+                            >
                               View Details
                             </Button>
                           )}
                           {booking.status === 'PENDING' && (
-                            <Button size="sm">
-                              Complete Payment
+                            <Button
+                            size="sm"
+                            onClick={() => navigate(`/payment?bookingId=${booking.id}&amount=${Number(booking.totalPrice)}`)}
+                          >
+                            Complete Payment
+                          </Button>
+                          )}
+                          {canCancelBooking(booking.status) && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => setShowCancelDialog(booking.id)}
+                              disabled={cancelBookingMutation.isPending}
+                            >
+                              {cancelBookingMutation.isPending && showCancelDialog === booking.id ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                                  Cancelling...
+                                </>
+                              ) : (
+                                <>
+                                  <X className="w-4 h-4 mr-1" />
+                                  Cancel
+                                </>
+                              )}
                             </Button>
                           )}
                         </div>
@@ -193,6 +237,51 @@ export default function BookingsPage() {
           </div>
         )}
       </div>
+
+      {/* Cancel Confirmation Dialog */}
+      {showCancelDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-none p-6 max-w-md w-full mx-4 shadow-lg border border-gray-300">
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Cancel Booking</h3>
+              <p className="text-gray-600">Are you sure you want to cancel this booking?</p>
+            </div>
+            
+            <div className="border-l-4 border-gray-400 pl-4 py-2 mb-6">
+              <p className="text-sm text-gray-600">
+                <span className="font-medium">Important:</span> Cancellation may be subject to the hotel's cancellation policy. 
+                Please review the terms before proceeding.
+              </p>
+            </div>
+
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowCancelDialog(null)}
+                className="flex-1"
+                disabled={cancelBookingMutation.isPending}
+              >
+                Keep Booking
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleCancelBooking(showCancelDialog)}
+                className="flex-1"
+                disabled={cancelBookingMutation.isPending}
+              >
+                {cancelBookingMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Cancelling...
+                  </>
+                ) : (
+                  'Yes, Cancel Booking'
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
