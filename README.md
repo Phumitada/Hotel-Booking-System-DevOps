@@ -2,7 +2,7 @@
 
 A modern, full-stack hotel booking platform inspired by Agoda, built with cutting-edge technologies and best practices.
 
-## ✨ Features
+## Features
 
 ### Core Functionality
 - **Hotel Management** - Browse, search, and filter hotels by location, price, and amenities
@@ -47,7 +47,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - **Prettier** - Code formatting
 - **Vite** - Fast build tool and dev server
 
-## 🏗 Architecture
+## Architecture
 
 ```
 ├── client/                 # React frontend
