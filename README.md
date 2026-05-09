@@ -8,7 +8,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - **Hotel Management** - Browse, search, and filter hotels by location, price, and amenities
 - **Room Booking** - Real-time room availability checking and reservation system
 - **User Authentication** - Secure JWT-based authentication with role-based access
-- **Payment Integration** - Mock payment processing with order management
+- **Payment Integration** - Omise payment gate way processing with order management
 - **Review System** - User ratings and reviews for hotels
 - **Admin Dashboard** - Complete hotel and booking management for administrators
 
