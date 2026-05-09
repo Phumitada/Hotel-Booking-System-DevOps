@@ -1,10 +1,10 @@
-# 🏨 Agoda Clone - Hotel Booking System
+# Hotel Booking System
 
 A modern, full-stack hotel booking platform inspired by Agoda, built with cutting-edge technologies and best practices.
 
 ## ✨ Features
 
-### 🎯 Core Functionality
+### Core Functionality
 - **Hotel Management** - Browse, search, and filter hotels by location, price, and amenities
 - **Room Booking** - Real-time room availability checking and reservation system
 - **User Authentication** - Secure JWT-based authentication with role-based access
@@ -12,7 +12,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - **Review System** - User ratings and reviews for hotels
 - **Admin Dashboard** - Complete hotel and booking management for administrators
 
-### 🚀 Technical Features
+### Technical Features
 - **Real-time Availability** - Prevent double bookings with database transactions
 - **Advanced Search** - Filter by dates, guests, price range, and amenities
 - **Responsive Design** - Mobile-first approach with Tailwind CSS
@@ -20,7 +20,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - **State Management** - React Query for server state management
 - **Database Relations** - Complex relationships with Prisma ORM
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React 18** - Modern React with hooks and concurrent features
@@ -72,7 +72,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 └── shared/                 # Shared types and utilities
 ```
 
-## 🗄 Database Schema
+## Database Schema
 
 ### Core Models
 - **User** - Authentication and profile management
@@ -88,7 +88,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - Rooms can have multiple bookings (non-overlapping)
 - Users can review hotels they've booked
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -138,7 +138,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
    npm run dev
    ```
 
-## 📱 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - User registration
@@ -168,7 +168,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - `PUT /api/reviews/:id` - Update review
 - `DELETE /api/reviews/:id` - Delete review
 
-## 🔐 Security Features
+## Security Features
 
 - **JWT Authentication** - Secure token-based authentication
 - **Password Hashing** - bcrypt for secure password storage
@@ -177,7 +177,7 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - **SQL Injection Prevention** - Prisma ORM protection
 - **CORS Configuration** - Cross-origin resource sharing
 
-## 🎨 UI/UX Features
+## UI/UX Features
 
 - **Responsive Design** - Works on all devices
 - **Modern UI** - Clean, professional interface
@@ -186,13 +186,13 @@ A modern, full-stack hotel booking platform inspired by Agoda, built with cuttin
 - **Form Validation** - Real-time validation feedback
 - **Toast Notifications** - Non-intrusive user feedback
 
-## 🧪 Testing (Future)
+## Testing (Future)
 
 - **Unit Tests** - Jest for component and utility testing
 - **Integration Tests** - Supertest for API testing
 - **E2E Tests** - Playwright for user flow testing
 
-## 🚀 Deployment
+## Deployment
 
 ### Frontend (Vercel/Netlify)
 ```bash
@@ -212,7 +212,7 @@ npm run build
 - Configure connection string in production
 - Run migrations in production environment
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -220,19 +220,15 @@ npm run build
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Inspired by [Agoda](https://www.agoda.com/)
 - Built with modern web technologies
 - Following best practices and design patterns
-
-## 📞 Contact
-
-[Your Name] - [Your Email] - [Your Portfolio]
 
 ---
 
