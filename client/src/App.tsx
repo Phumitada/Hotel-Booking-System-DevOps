@@ -9,8 +9,8 @@ import BookingDetailPage from "@/pages/BookingDetail";
 import AdminHotels from "@/pages/admin/AdminHotels";
 import AdminBookings from "@/pages/admin/AdminBookings";
 import AdminGuard from "@/components/AdminGuard";
-// import ExplorePage from "./pages/Explore";
-// import BookingsPage from "./pages/Bookings";
+import ExplorePage from "./pages/Explore";
+import BookingsPage from "./pages/Bookings";
 import WishlistPage from "@/pages/WishList";
 import RoomsPage from "@/pages/Rooms";
 import HotelsPage from "@/pages/Hotels";
@@ -54,14 +54,14 @@ function App() {
             </MainLayout>
           }
         />
-        {/* <Route
+         <Route
           path="/explore"
           element={
             <MainLayout>
               <ExplorePage />
             </MainLayout>
           }
-        /> */}
+        /> 
         <Route
           path="/hotels/:hotelId/rooms"
           element={
@@ -78,14 +78,14 @@ function App() {
             </MainLayout>
           }
         />
-        {/* <Route
+        <Route
           path="/bookings"
           element={
             <MainLayout>
               <BookingsPage />
             </MainLayout>
           }
-        /> */}
+        />
         <Route
           path="/search"
           element={
