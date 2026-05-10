@@ -5,7 +5,7 @@
   "scripts": {
   "dev": "tsx watch index.ts",
   "build": "echo 'no build needed'",
-  "start": "tsx index.ts",
+  "start": "npx prisma migrate deploy && tsx index.ts",
   "studio": "prisma studio",
   "seed": "tsx seeds/seed.ts"
 },
