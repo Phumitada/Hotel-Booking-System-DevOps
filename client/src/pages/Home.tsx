@@ -139,7 +139,7 @@ export default function HomePage() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-light px-8 py-6 text-sm tracking-wider uppercase"
+                className="border-primary-foreground/30 text-primary hover:bg-primary-foreground/10 font-light px-8 py-6 text-sm tracking-wider uppercase"
               >
                 <Link to="/register">Create Account</Link>
               </Button>
