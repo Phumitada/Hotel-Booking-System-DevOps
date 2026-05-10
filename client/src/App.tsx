@@ -54,14 +54,14 @@ function App() {
             </MainLayout>
           }
         />
-        <Route
+        {/* <Route
           path="/explore"
           element={
             <MainLayout>
               <ExplorePage />
             </MainLayout>
           }
-        />
+        /> */}
         <Route
           path="/hotels/:hotelId/rooms"
           element={
@@ -78,14 +78,14 @@ function App() {
             </MainLayout>
           }
         />
-        <Route
+        {/* <Route
           path="/bookings"
           element={
             <MainLayout>
               <BookingsPage />
             </MainLayout>
           }
-        />
+        /> */}
         <Route
           path="/search"
           element={
