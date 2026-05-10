@@ -2,20 +2,21 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "@/layout/MainLayout";
 import AuthLayout from "@/layout/AuthLayout";
 import AdminLayout from "@/components/AdminLayout";
-import HomePage from "@/pages/home";
-import LoginPage from "@/pages/login";
-import RegisterPage from "@/pages/register";
-import HotelsPage from "@/pages/hotels";
-import RoomsPage from "@/pages/rooms";
 import BookingPage from "@/pages/Booking";
-import BookingsPage from "@/pages/bookings";
-import WishlistPage from "@/pages/wishlist";
 import PaymentVerificationPage from "@/pages/PaymentVerification";
 import PaymentPage from "@/pages/PaymentPage";
 import BookingDetailPage from "@/pages/BookingDetail";
 import AdminHotels from "@/pages/admin/AdminHotels";
 import AdminBookings from "@/pages/admin/AdminBookings";
 import AdminGuard from "./components/AdminGuard";
+import ExplorePage from "./pages/Explore";
+import BookingsPage from "./pages/Bookings";
+import WishlistPage from "./pages/WishList";
+import RoomsPage from "./pages/Rooms";
+import HotelsPage from "./pages/Hotels";
+import RegisterPage from "./pages/Register";
+import LoginPage from "./pages/Login";
+import HomePage from "./pages/Home";
 
 function App() {
   return (
