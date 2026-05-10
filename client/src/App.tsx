@@ -8,15 +8,15 @@ import PaymentPage from "@/pages/PaymentPage";
 import BookingDetailPage from "@/pages/BookingDetail";
 import AdminHotels from "@/pages/admin/AdminHotels";
 import AdminBookings from "@/pages/admin/AdminBookings";
-import AdminGuard from "./components/AdminGuard";
-import ExplorePage from "./pages/Explore";
+import AdminGuard from "@/components/AdminGuard";
+// import ExplorePage from "./pages/Explore";
 // import BookingsPage from "./pages/Bookings";
-import WishlistPage from "./pages/WishList";
-import RoomsPage from "./pages/Rooms";
-import HotelsPage from "./pages/Hotels";
-import RegisterPage from "./pages/Register";
-import LoginPage from "./pages/Login";
-import HomePage from "./pages/Home";
+import WishlistPage from "@/pages/WishList";
+import RoomsPage from "@/pages/Rooms";
+import HotelsPage from "@/pages/Hotels";
+import RegisterPage from "@/pages/Register";
+import LoginPage from "@/pages/Login";
+import HomePage from "@/pages/Home";
 
 function App() {
   return (
