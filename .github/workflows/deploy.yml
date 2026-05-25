@@ -45,3 +45,10 @@ jobs:
             git pull origin main
             docker compose up -d --build
             docker compose ps
+            
+      - name: Verify deployment
+        run: |
+          sleep 10
+          curl -f https://hotel.phumitada.com || exit 1
+          curl -f https://hotel-api.phumitada.com/api/hotels || exit 1
+          echo "Deployment verified successfully"
