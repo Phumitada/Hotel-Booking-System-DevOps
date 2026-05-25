@@ -9,8 +9,8 @@ A full-stack hotel booking platform inspired by Agoda, built with TypeScript and
 
 **Demo Account**
 ```
-Email:    guest@hotel.com
-Password: guest123
+Email:    john@example.com
+Password: password123
 ```
 
 ---
