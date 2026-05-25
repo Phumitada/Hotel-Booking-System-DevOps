@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-  "dev": "tsx watch index.ts",
-  "build": "echo 'no build needed'",
-  "start": "npx prisma migrate deploy && tsx index.ts",
-  "studio": "prisma studio",
-  "seed": "tsx seeds/seed.ts"
-},
+    "dev": "tsx watch index.ts",
+    "build": "echo 'no build needed'",
+    "start": "npx prisma migrate deploy && tsx index.ts",
+    "studio": "prisma studio",
+    "seed": "tsx seeds/seed.ts",
+    "test": "vitest run"
+  },
+  
   "prisma": {
     "seed": "tsx seeds/seed.ts"
   },
@@ -32,8 +34,11 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.11.16",
+    "@types/supertest": "^7.2.0",
     "prisma": "^6.19.2",
+    "supertest": "^7.2.2",
     "tsx": "^4.7.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^4.1.7"
   }
 }
