@@ -36,7 +36,7 @@ services:
   frontend:
     build: ./client
     ports:
-      - "5200:80"
+      - "5200:8080"
 
 volumes:
   pgdata:
