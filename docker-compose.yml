@@ -47,7 +47,7 @@ services:
     ports:
       - "5001:5000"
     healthcheck:
-      test: ["CMD", "wget","--spider","-q","http://localhost:5000"]
+      test: ["CMD", "wget","--spider","-q","http://localhost:5000/api/hotels"]
       interval: 20s
       timeout: 10s
       retries: 5
