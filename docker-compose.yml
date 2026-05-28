@@ -7,16 +7,28 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   backend:
     build: ./server
     environment:
-      - POSTGRES_DB={POSTGRES_DB}
-      - POSTGRES_USER={POSTGRES_USER}
-      - POSTGRES_PASSWORD={POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
@@ -28,15 +40,29 @@ services:
       - OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
       - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
-      - redis
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "5001:5000"
+    healthcheck:
+      test: ["CMD", "wget","--spider","-q","http://localhost:5000"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   frontend:
     build: ./client
     ports:
       - "5200:8080"
+    healthcheck:
+      test: ["CMD", "wget","--spider","-q","http://localhost:8080"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
 volumes:
   pgdata:
