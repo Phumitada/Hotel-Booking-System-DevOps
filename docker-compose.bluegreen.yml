@@ -1,0 +1,118 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+    - nginx_network
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+    - db_network
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+    - db_network
+
+  backend_green:
+    build: ./server
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - ACCESS_TOKEN_EXPIRES=${ACCESS_TOKEN_EXPIRES}
+      - REFRESH_TOKEN_EXPIRES=${REFRESH_TOKEN_EXPIRES}
+      - PORT=${PORT}
+      - OMISE_PUBLIC_KEY=${OMISE_PUBLIC_KEY}
+      - OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget","--spider","-q","http://127.0.0.1:5000/api/hotels"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - nginx_network
+      - db_network
+
+  backend_blue:
+    build: ./server
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - ACCESS_TOKEN_EXPIRES=${ACCESS_TOKEN_EXPIRES}
+      - REFRESH_TOKEN_EXPIRES=${REFRESH_TOKEN_EXPIRES}
+      - PORT=${PORT}
+      - OMISE_PUBLIC_KEY=${OMISE_PUBLIC_KEY}
+      - OMISE_SECRET_KEY=${OMISE_SECRET_KEY}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget","--spider","-q","http://127.0.0.1:5000/api/hotels"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - nginx_network
+      - db_network
+
+  frontend:
+    build: ./client
+    healthcheck:
+      test: ["CMD", "wget","--spider","-q","http://127.0.0.1:8080"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - nginx_network
+
+networks:
+  db_network:
+  nginx_network:
+
+volumes:
+  pgdata:
