@@ -42,14 +42,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}   # token ที่ GitHub ออกให้อัตโนมัติ ไม่ต้องสร้าง secret เอง
 
+      - name: Lowercase repo name
+        id: repo
+        run: echo "name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./server            # path ไปโฟลเดอร์ที่มี Dockerfile — เช็คว่าตรงจริงมั้ย
+          context: ./server
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/hotel-booking-api:latest
-            ghcr.io/${{ github.repository }}/hotel-booking-api:${{ github.sha }}
+            ghcr.io/${{ steps.repo.outputs.name }}/hotel-booking-api:latest
+            ghcr.io/${{ steps.repo.outputs.name }}/hotel-booking-api:${{ github.sha }}
 
   deploy:
     name: Deploy to VPS
