@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment # บอก resource ว่าเป็ฯ deployment
+metadata:
+  name: backend # name of deployment - using on kubectl get/describe
+spec:
+  replicas: 1 # How many pod you want
+
+  selector: 
+    matchLabels:
+      app: hotel-booking-api # Define which pod this deployment owns
+    
+  template: # Blue print of all replicas need to be matched as matchLabels
+    metadata:
+      labels:
+          app: hotel-booking-api  
+
+    spec:
+      containers:
+        - name: api # Name of container inside pod
+          image: ghcr.io/phumitada/hotel-booking-system-devops/hotel-booking-api:35274acb649a6b9ca6660a8a7701c4ee2ba15072
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: hotel-booking-config
+            - secretRef:
+                name: hotel-booking-secret
+          readinessProbe:              # Probe
+            httpGet:
+              path: /api/hotels
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/hotels
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3

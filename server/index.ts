@@ -46,6 +46,19 @@ app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/payment',paymentRoutes)
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
+})
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully')
+  server.close(() => {
+    console.log('HTTP server closed')
+    process.exit(0)
+  })
+
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout')
+    process.exit(1)
+  }, 10000)
 })

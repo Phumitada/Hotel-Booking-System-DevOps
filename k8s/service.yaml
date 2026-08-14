@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotel-booking-api # This will be our internal DNS
+spec:
+  selector:
+    app: hotel-booking-api # Have to match with Label
+  ports:
+  - port: 5000 # External port for other pod to communicate with
+    targetPort: 5000 # Inner port for container to listen
+
+  type: ClusterIP # default - only be connected by pod inside this cluster,dont expose yet
