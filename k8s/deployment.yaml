@@ -35,7 +35,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /api/hotels
+              path: /api/health
               port: 5000
             initialDelaySeconds: 15
             periodSeconds: 20
