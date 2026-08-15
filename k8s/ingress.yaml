@@ -10,15 +10,15 @@ spec:
     - hosts:
       - hotel-api.phumitada.com # Domain that want certified(Match with rule.host)
       secretName: hotel-api-tls
-rules:
-  - host: hotel-api.phumitada.com # Domain for browser to route in this rule
-    http:
-      paths:
-        - path: / # Match all the path that begin with /
-          pathType: Prefix
-          backend:
-            service:
-              name: hotel-booking-api # Need to match exactly with real service name (Can check by kubectl get svc)
-              port:
-                number: 5000 # Same port that service expose
+  rules:
+    - host: hotel-api.phumitada.com # Domain for browser to route in this rule
+      http:
+        paths:
+          - path: / # Match all the path that begin with /
+            pathType: Prefix
+            backend:
+              service:
+                name: hotel-booking-api # Need to match exactly with real service name (Can check by kubectl get svc)
+                port:
+                  number: 5000 # Same port that service expose
 
