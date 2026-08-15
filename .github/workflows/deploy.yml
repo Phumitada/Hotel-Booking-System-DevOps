@@ -54,26 +54,3 @@ jobs:
           tags: |
             ghcr.io/${{ steps.repo.outputs.name }}/hotel-booking-api:latest
             ghcr.io/${{ steps.repo.outputs.name }}/hotel-booking-api:${{ github.sha }}
-
-  deploy:
-    name: Deploy to VPS
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd ~/Projects/Hotel-Booking-System-DevOps
-            git pull origin main
-            docker compose up -d --build
-            docker compose ps
-      - name: Verify deployment
-        run: |
-          sleep 120
-          curl -f https://hotel.phumitada.com || exit 1
-          curl -f https://hotel-api.phumitada.com/api/hotels || exit 1
-          echo "Deployment verified successfully"
