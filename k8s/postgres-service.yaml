@@ -5,7 +5,7 @@ metadata:
 spec:
   clusterIP: None # Headless service (Must for statefulset)
   selector:
-    app: myapp
+    app: postgres
   ports:
   - port: 5432
     targetPort: 5432
