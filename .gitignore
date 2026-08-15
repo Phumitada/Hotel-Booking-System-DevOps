@@ -113,3 +113,4 @@ docker-compose.override.yml
 .env
 
 /k8s/secret.yaml
+get_helm.sh

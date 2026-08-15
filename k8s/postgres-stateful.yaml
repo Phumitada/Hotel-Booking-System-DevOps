@@ -21,9 +21,9 @@ spec:
         envFrom:
           - secretRef:
               name: hotel-booking-secret
-        vloumeMounts:
+        volumeMounts:
           - name: pgdata
-            mouthPath: /var/lib/postgresql/data
+            mountPath: /var/lib/postgresql/data
         readinessProbe:
           exec:
             command: ["pg_isready", "-U", "admin", "-d", "appdb"]
